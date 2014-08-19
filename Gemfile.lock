@@ -1,0 +1,76 @@
+GIT
+  remote: git://github.com/jeremyevans/roda.git
+  revision: 20cca7222f071f0a4592f891477c0c2f3cd63125
+  specs:
+    roda (0.9.0)
+      rack
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (4.1.4)
+      activesupport (= 4.1.4)
+      builder (~> 3.1)
+    activesupport (4.1.4)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    awesome_print (1.2.0)
+    bcrypt (3.1.7)
+    bson (2.3.0)
+    builder (3.2.2)
+    connection_pool (2.0.0)
+    daemons (1.1.9)
+    eventmachine (1.0.3)
+    haml (4.0.5)
+      tilt
+    i18n (0.6.11)
+    icalendar (2.1.1)
+    json (1.8.1)
+    kgio (2.9.2)
+    mini_portile (0.6.0)
+    minitest (5.4.0)
+    mongoid (4.0.0)
+      activemodel (~> 4.0)
+      moped (~> 2.0.0)
+      origin (~> 2.1)
+      tzinfo (>= 0.3.37)
+    moped (2.0.0)
+      bson (~> 2.2)
+      connection_pool (~> 2.0)
+      optionable (~> 0.2.0)
+    nokogiri (1.6.3.1)
+      mini_portile (= 0.6.0)
+    optionable (0.2.0)
+    origin (2.1.1)
+    rack (1.5.2)
+    raindrops (0.13.0)
+    thin (1.6.2)
+      daemons (>= 1.0.9)
+      eventmachine (>= 1.0.0)
+      rack (>= 1.0.0)
+    thread_safe (0.3.4)
+    tilt (2.0.1)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    unicorn (4.8.3)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  awesome_print
+  bcrypt
+  haml
+  icalendar
+  mongoid
+  nokogiri
+  rack
+  roda!
+  thin
+  unicorn

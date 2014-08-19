@@ -1,0 +1,17 @@
+# misc stuff
+misc/
+config/.env
+*/old/*
+_start_thin.rb
+*sublime-*
+=*
+.rbenv-vars
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac crap
+.DS_Store

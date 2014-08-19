@@ -1,0 +1,46 @@
+---
+- sport: basketball
+  key:
+    block: 1
+    rebound: 1
+    assist: 1
+    point: 1
+    steal: 1
+    turnover: -1
+  :effective_at: 2013-08-18 15:55:39.753629000 -07:00
+  :expires_at: 2015-08-18 15:55:39.753630000 -07:00
+  tiebreakers:
+    points: desc
+    created_at: asc
+- sport: football
+  key:
+    Touchdown: 50
+    Touchdown Thrown: 25
+    Rushing/Receiving Yards: 1
+    Passing Yards: 0.5
+    Return yards (punt/kickoff): 0.5
+    Punt/Kickoff Touchdown: 75
+    'Int Thrown ': -50
+    'Fumble Lost ': -50
+    Defensive Touchdown: 100
+    Interception: 50
+    Forced Fumble: 30
+    Fumble Recovery: 30
+    Sacks: 30
+    Blocked Kicks: 35
+    Tackles for Loss: 20
+    Solo Tackles: 10
+    Assisted Tackles: 5
+    Pass Breakups: 15
+    Field Goals (40+ yards): 20
+    Field Goals (30-40 yards): 15
+    Field Goals (0-30 yards): 10
+    Punt Touchbacks: 10
+    Punts - Inside Redzone: 20
+    Missed Field Goals: -5
+    'Missed PATs ': -10
+  :effective_at: 2013-08-18 15:55:39.753640000 -07:00
+  :expires_at: 2015-08-18 15:55:39.753640000 -07:00
+  tiebreakers:
+    points: desc
+    created_at: asc
