@@ -1,0 +1,41 @@
+
+%table
+  %tr
+    %th ID
+    %th Year
+    %th Sport
+    %th Games
+    %th Edit
+  - @teams.each do |t|
+    %tr
+      %td
+        %a{href: "#{@base_url}#{t.code}"}= t.code
+      %td= t.year
+      %td= t.sport
+      %td= t.games.count
+      %td
+        %a{href: "/admin/#{t.code}/delete"} Delete
+
+
+- 4.times do
+  %br
+%hr
+%br
+%form{method: :post, action: '/admin/teams'}
+  %input{name: 'year', placeholder: 'year'}
+  %br
+  %br
+  %input{name: 'url_roster', placeholder: 'roster url'}
+  roster url needs to be official arizona athletics page
+  %br
+  %br
+  %input{name: 'url_ics', placeholder: 'calendar url'}
+  calendar url needs to be outlook subscription url from arizona athletics
+  %br
+  %select{name: 'sport', default: false}
+    %option{name: 'basketball', value: 'basketball' } basketball
+    %option{name: 'football',   value: 'football' } football
+  Select sport
+  %br
+  %button{ type: 'submit' } Go
+

@@ -1,26 +1,33 @@
 # encoding: utf-8
 require 'rack'
+require 'rack/mobile-detect'
 # require 'rack/protection'
 # require 'rack/parser'
 require 'roda'
 require 'haml'
+require 'sass'
 require 'json'
 
 
 class RodaApp < Roda
   plugin :multi_route
   plugin :render, :engine=>'haml'
-  plugin :all_verbs
+  render_opts[:cache] = ENV['RACK_ENV'] != 'development'
+  plugin :view_subdirs
+  # plugin :all_verbs
   # plugin :default_headers, 'Content-Type' => 'application/json'
   # plugin :indifferent_params
   plugin :halt
 
-  # use Rack::Session::Cookie, :secret => 'change_me',
-  #                            :old_secret => 'also_change_me'
+  use Rack::Static, :urls => ["/assets/images", "/assets/js"],
+                    :root => "public"
+  use Rack::MobileDetect
+  use Rack::Session::Cookie, :secret => ENV['SECRET'],
+                             :old_secret => ENV['OLD_SECRET'],
                              # :key => 'rack.session',
                              # :domain => 'foo.com',
-                             # :path => '/',
-                             # :expire_after => 2592000,
+                             # :expire_after => 3600*24*90,
+                             :path => '/'
 
 end
 

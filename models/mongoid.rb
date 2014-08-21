@@ -1,3 +1,47 @@
+class User
+  include Mongoid::Document
+  include ActiveModel::SecurePassword
+  include ActiveModel::MassAssignmentSecurity
+  has_many :seasons
+
+  field :name,            type: String
+  field :email,           type: String
+  field :cell,            type: String
+  field :carrier,         type: String
+  field :role,            type: Integer
+  field :password_digest, type: String
+  has_secure_password
+  attr_protected :role
+  index({ name: 1 }, { unique: true })
+
+  # send code through phpBB message, basically login?id=BSON_ID
+  # then set cookie if desired
+  # allow to set password anyways if they want
+  # or maybe this is a terrible complexity creep haha
+
+  def signup_for_team(team)
+    self.seasons.create(team: team)
+  end
+  def active_seasons
+    self.seasons.select(&:active?)
+  end
+  def admin?
+    self.role.zero?
+  end
+
+  class << self
+    def authenticate(id, password)
+      user = self.or({ email: id }, { name: id }).first and user.authenticate(password)
+    end
+  end
+end
+
+class Admin < User
+  after_create do |user|
+    user.update_attribute(:role, 0)
+  end
+end
+
 
 class Season
   include Mongoid::Document
@@ -25,38 +69,6 @@ class Season
   end
 
   class << self
-  end
-end
-
-class User
-  include Mongoid::Document
-  include ActiveModel::SecurePassword
-  has_many :seasons
-
-  field :name,            type: String
-  field :email,           type: String
-  field :cell,            type: String
-  field :carrier,         type: String
-  field :role,            type: Integer
-  field :password_digest, type: String
-  has_secure_password
-
-  # send code through phpBB message, basically login?id=BSON_ID
-  # then set cookie if desired
-  # allow to set password anyways if they want
-  # or maybe this is a terrible complexity creep haha
-
-  def signup_for_team(team)
-    self.seasons.create(team: team)
-  end
-  def active_seasons
-    self.seasons.select(&:active?)
-  end
-
-  class << self
-    def authenticate(id, password)
-      user = self.or({ email: id }, { username: id }).first and user.authenticate(password)
-    end
   end
 end
 
@@ -103,6 +115,7 @@ class Team
   has_many :games, dependent: :delete
   has_and_belongs_to_many :players
   has_many :seasons
+  has_many :performances
   # has_many :seasons do
   #   def number(n)
   #     where(number: n).first
@@ -114,7 +127,10 @@ class Team
   field :code,        type: String,   default: -> {"#{self.year}#{self.sport.to_s.first.upcase}"}
   field :url_roster,  type: String
   field :url_ics,     type: String
+  field :google_doc,  type: String
   field :status,      type: Integer,  default: 0
+
+  index({ year: 1, sport: 1 }, { unique: true })
 
   after_create :import_games
   after_create :import_players
@@ -148,7 +164,7 @@ class Team
     self.games.select(&:open_for_picking?)
   end
   def game_number(n)
-    self.games.where(number: n).first
+    self.games.where(number: n.to_i).first
   end
   def next_game
     self.games.gt(time: Time.now).first
@@ -165,6 +181,9 @@ class Team
   end
   def active?
     self.status < 3
+  end
+  def finalized?
+    self.status == 8
   end
   def update_season_rankings
     self.seasons.map(&:calculate_points)
@@ -190,39 +209,56 @@ class Game
   field :cost,          type: Integer
   field :ics_id,        type: String
 
+  default_scope -> { asc(:number) }
+
   # scope :open_for_picking, -> { where(status: 4) }
 
   def prepare
     return if self.performances.exists?
-    self.performances.concat(self.team.players.map{ |player| player.performances.create })
+    ids = self.team.players.map{ |player| player.performances.create }.map(&:_id)
+    self.performance_ids = ids
+    self.team.update_attribute(:performance_ids, self.team.performance_ids + ids)
+    # self.team.performances.concat(self.team.players.map{ |player| player.performances.create })
     self.inc(status: 1)
   end
   def price(arr = nil)
     return if status >= 2 || arr.nil?
     arr.each do |id, price|
-      next if price == 1 # modify process to not even pass these ones
-      self.performances.find(id).update_attribute(:price, price)
+      next if price.to_i == 1 # modify process to not even pass these ones
+      self.performances.find(id).update_attribute(:price, price.to_i)
     end
     self.inc(status: 1)
   end
-  def score(data)
-    sport = self.team.sport
-    scoring_guide = ScoringGuide.current(sport)
-    points_arr = scoring_guide.points
+  def scoring_guide
+    ScoringGuide.current(self.team.sport)
+  end
+  def google_data
+    data_source = self.season.spreadsheet
+    data = 1 # worksheet name = self.number
+    # return data from here
+  end
+  def update_data
+    return false unless self.status.between?(4,5)
+    # verify google data is available
+    self.update_attribute(:status, 6)
+  end
+  def score(data = nil)
+    return false unless self.status.between?(4,5)
+    points_arr = self.scoring_guide.points
     data.map do |hash|
       perf = Player.find_by(hash[:identity]).performances.find_by(game: self._id)
       perf.score(hash[:stats], points_arr)
     end
-    # self.performances.each{ |p| p.score(sport) }
-    # self.picksets.each { |p| p.score(sport) }
-    # score all performances
-    # score all picksets
-    scoring_guide.score_picksets(self.picksets)
-    # rank all picksets
+    self.scoring_guide.score_picksets(self.picksets)
     # self.clean
+    self.update_attribute(:status, 7)
+  end
+  def update_standings
+    return false unless self.status == 7
     self.team.update_season_rankings
     self.inc(status: 1)
   end
+
   def update_time(time = nil)
     time ||= self.time
     self.update_attributes(time: time, status: 3) if self.status == 2
@@ -233,6 +269,10 @@ class Game
   def open # need to update time somewhere
     self.inc(status: 1) if self.status == 3
   end
+  def lock
+    self.inc(status: 1) if self.status == 4
+  end
+
   def open_for_picking?
     self.status == 4
   end
@@ -269,8 +309,22 @@ class Player
   field :year,        type: String
   field :home,        type: String
 
-
   field :group,       type: String # => (o|d) for jersey lookup
+
+  def points_in_team(team)
+    perfs = self.performances.where(team: team)
+    perfs.map(&:points).inject(:+) / perfs.length
+  end
+  def price_in_team(team)
+    perfs = self.performances.where(team: team)
+    perfs.map(&:price).inject(:+) / perfs.length
+  end
+  def team_points_price(team)
+    perfs = self.performances.where(team: team)
+    n = [perfs.length, 1].max
+    [perfs.map(&:points).inject(:+) / n, perfs.map(&:price).inject(:+) / n]
+  end
+
 
   class << self
     def from_roster(url)
@@ -304,11 +358,16 @@ class Performance
   include Mongoid::Document
   belongs_to :game
   belongs_to :player
+  belongs_to :team
   # belongs_to :pickset => only relevant on pickset.performances
 
   field :price,     type: Integer,  default: 1
-  field :stats,     type: Array,    default: -> {Array.new}
+  field :stats,     type: Array
   field :points,    type: Integer,  default: 0
+
+  # after_create do |p|
+  #   p.game.team
+  # end
 
   def updates_stats(arr)
     self.update_attribute(:stats, arr)

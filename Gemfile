@@ -2,6 +2,7 @@ source "http://rubygems.org"
 ruby '2.1.2'
 
 gem 'rack'
+gem 'rack-mobile-detect'
 # gem 'rack-parser'
 platforms :ruby do    # linux
   gem 'unicorn'
@@ -31,10 +32,12 @@ gem 'roda', github: 'jeremyevans/roda'
 
 # frontend
 gem 'haml'
+gem 'sass'
 
 # data storage
 # gem 'activerecord'
 gem 'mongoid'
+gem 'protected_attributes'
 gem 'bcrypt'
 
 # backend

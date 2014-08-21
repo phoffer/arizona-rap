@@ -1,0 +1,32 @@
+%aside.sidebar.sidebar-left
+  %h2 Arizona RAP
+  %ul
+    - if @current_user
+      %li
+        Dashboard
+    %li
+      %a{ href: '/' } Teams
+    - if @team
+      %li
+        %a{ href: "#{@current_user.admin? ? '/admin/' : '/'}#{@team.code}/standings" } Standings
+    - if @current_user
+      %li
+        %a{ href: '/auth/logout' } Log Out
+    - else
+      %li
+        %a{ href: '' } What is this?
+      %li
+        %h3 Log in
+        %form{ action:'/auth/login', method: :post }
+          %input{ type: 'text', name: 'id', placeholder: 'name' }
+          %input{ name: 'password', type: 'password', placeholder: 'password' }
+          %button{ type: 'submit' } Go
+          %br
+          %input{ name: 'remember', type: 'checkbox' }
+          Remember Me
+      %li
+        %h3 Sign up
+        %form{ action: '/auth/signup', method: :post }
+          %input{ type: 'text', name: 'name', placeholder: 'name' }
+          %input{ name: 'password', type: 'password', placeholder: 'password' }
+          %button{ type: 'submit' } Go

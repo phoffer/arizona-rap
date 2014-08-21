@@ -1,0 +1,14 @@
+%table
+  %thead
+    %th Number
+    %th Opponent
+    %th Time
+    %th Status
+  - @team.games.each do |g|
+    %tr
+      %td
+        %a{href: "#{@base_url}#{@team.code}/games/#{g.number}"}= g.number
+      %td= g.opponent
+      %td= g.time
+      %td= g.status
+

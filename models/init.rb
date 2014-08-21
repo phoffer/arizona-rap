@@ -2,6 +2,7 @@
 # require 'active_record'
 # require 'bson'
 require 'mongoid'
+require 'protected_attributes'
 require 'moped'
 require 'icalendar'
 require 'open-uri'

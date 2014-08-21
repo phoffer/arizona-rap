@@ -1,0 +1,107 @@
+// Variabless
+$sidebarWidth: 400px;
+$contentWidth: 700px;
+$color-blue: #0C234B;
+$color-red:  #AB0520;
+$globalPadding: 10px;
+* {margin: 0;}
+// The actual thing start here
+.wrap {
+  margin: 0 $sidebarWidth;
+}
+.content,
+.sidebar {
+  box-sizing: border-box;
+  float: left;
+  padding: $globalPadding;
+}
+.sidebar {
+  color: white;
+  background-color: $color-blue;
+  padding: 0;
+  ul {
+    padding-left: 0;
+    width: 100%;
+    list-style: none;
+    li {
+      background: shade($color-blue, 20%);
+      min-height: 40px;
+      margin-bottom: 10px;
+      width: 100%;
+      // color: $color-red;
+      a {
+        color: white;
+        display: block;
+      }
+      form {
+        input[type="text"], input[type="password"] {
+          width: 150px;
+          button {
+            background-color: shade($color-red, 20%);
+            height: 230px;
+            width: 30px;
+          }
+        }
+      }
+    }
+  }
+}
+.sidebar:after {
+  background: $color-blue;
+}
+.sidebar:after,
+.content:after {
+  content: ""; // Needed
+  display: block; // Needed
+  height: 5000px; // Very large value
+  position: fixed; top: 0; // Needed
+}
+.content {
+  border-top: $globalPadding solid white;
+  // color: black;
+  width: $contentWidth;
+  &:after {
+    left: $sidebarWidth;
+    // width: 100%;
+    z-index: -10; // Below sidebars
+  }
+}
+.sidebar,
+.sidebar:after {
+  // These borders are rather important
+  // Put them in blue or red to see how it works
+  border-color: $color-red;
+  border-style: solid;
+  border-width: $globalPadding $globalPadding 0 $globalPadding;
+  box-sizing: border-box;
+  width: $sidebarWidth;
+  z-index: -1;
+}
+.sidebar-right:after {
+  right: 0;
+}
+.sidebar-left:after {
+  left: 0;
+}
+
+// Just irrelevant styling
+h1,
+h2,
+p {
+  margin: 0 0 15px 0;
+}
+h2 {
+  font-size: 20px;
+}
+ul {
+  padding-left: 20px;
+}
+
+// more stuff
+pre {
+  white-space: pre-wrap;
+  code {
+    white-space: pre-wrap;
+    width: $contentWidth;
+  }
+}

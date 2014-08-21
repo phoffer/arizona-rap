@@ -1,0 +1,26 @@
+%form{method: "get", action: "#{@base_url}status/#{@url_arr[@game.status]}"}
+  %input{ type: 'submit', value: 'submit' } Go
+  %table
+    %thead
+      %th Number
+      %th Last Name
+      %th First Name
+      %th Average points
+      %th Average price
+      %th Points / $
+      %th= "Price for #{@game.opponent}"
+    %tbody
+      - @team.players.map { |p| [*p.team_points_price(@team), p.last, p.first, p] }.sort_by(&:first).reverse.each do |arr|
+        %tr
+          - p = arr.last
+          %td= p.number
+          %td= p.last
+          %td= p.first
+          %td= arr.first
+          %td= arr[1]
+          %td= arr.first / arr[1]
+          %td
+            %input{type: :hidden, name: 'ids[]', value: p.performances.find_by(game: @game._id)._id}
+            %input{type: :number, name: 'dol[]', value: nil}
+      %br
+      %br

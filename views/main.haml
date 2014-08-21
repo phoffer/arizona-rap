@@ -2,3 +2,16 @@
 / %a{href: 'auth/twitter'} twitter
 / %a{href: 'auth/linkedin'} LinkedIn
 / %a{href: 'auth/google_oauth2'} google
+
+/ %pre
+/   %code
+/     &= @teams.inspect #.gsub('<', '&lt;').gsub('>', '&gt;')
+
+%table
+  - @teams.each do |t|
+    %tr
+      %td
+        %a{href: "/#{t.code}/"}= t.code
+      %td= t.year
+      %td= t.sport
+

@@ -8,9 +8,9 @@
     {"name":"user_06", "password":"pass_01"},
     {"name":"user_07", "password":"pass_01"},
     {"name":"user_08", "password":"pass_01"},
-    {"name":"user_09", "password":"pass_01"},
+    {"name":"user_09", "password":"pass_01"}
   ],
-  "admins":[
+  "admins": [
     {"name":"admin_01", "password":"pass_01"},
     {"name":"admin_02", "password":"pass_02"}
   ]

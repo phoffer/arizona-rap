@@ -40,7 +40,7 @@ end
 clear         # empty db for clean run
 puts "DB cleared @ #{Time.now}"
 STDOUT.flush
-
+Admin.create(name: 'prh', password: 'prh')
 # admin => setup
 add_scoring_guides                                    # => scoring guides added in advance
 t = Team.find_by(team_f13) || Team.create(team_f13)   # => admin creates team
@@ -50,6 +50,7 @@ STDOUT.flush
 
 # users sign up
 json_data = JSON.parse(File.read('data.json')) # => fake user info
+Admin.create(name: 'admin', password: 'admin')
 users = json_data['users'].map do |h|
   u = User.find_by(h) || User.create(h)   # => user creates account
   team = Team.current.first._id           # => user looks up open teams and picks one (from web, using _id)
@@ -98,6 +99,7 @@ STDOUT.flush
   # g = t.next_game                               # => would normally be last_game (switched to avoid time-travel issues)
   g = t.game_number(i)                               # => would normally be last_game (switched to avoid time-travel issues)
   g.score(stats)                                # => score the game
+  g.update_standings                            # => update standings
   puts "#{g.opponent} admin score done @ #{Time.now}"
   STDOUT.flush
 end
