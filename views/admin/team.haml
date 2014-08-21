@@ -1,17 +1,17 @@
 
-%p= @team.status
+%p= @team.status_code
 / %br
-- if @team.status.zero?
+- if @team.status_code.zero?
   %a{href: "#{@base_url}#{@team.code}/open"} Open for signup and play
-- elsif @team.status == 1
+- elsif @team.status_code == 1
   Team is open for signups.
   %br
   %a{href: "#{@base_url}#{@team.code}/close"} Close signups
-- elsif @team.status == 2 and @team.next_game.nil?
+- elsif @team.status_code == 2 and @team.next_game.nil?
   Signups are closed and season is over.
   %br
   %a{href: "#{@base_url}#{@team.code}/finalize"} Finalize team and season
-- elsif @team.status == 2 #and @team.next_game.nil?
+- elsif @team.status_code == 2 #and @team.next_game.nil?
   Signups are closed but season is still in progress
 
 
@@ -20,7 +20,7 @@
     %th Number
     %th Opponent
     %th Time
-    %th Status
+    %th status_code
   - @team.games.each do |g|
     %tr
       %td
@@ -28,7 +28,7 @@
       %td
         %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
-      %td= g.status
+      %td= g.status_code
 
 
 %h3 Standings

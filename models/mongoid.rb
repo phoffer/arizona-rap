@@ -136,16 +136,20 @@ class Team
   field :url_roster,  type: String
   field :url_ics,     type: String
   field :google_doc,  type: String
-  field :status,      type: Integer,  default: 0
+  field :status_code, type: Integer,  default: 0
 
   index({ year: 1, sport: 1 }, { unique: true })
 
   after_create :import_games
   after_create :import_players
 
-  scope :current,   -> { where(status: 1) }
-  scope :active,    -> { lt(status: 3) }
-  scope :finished,  -> { where(status: 3) }
+  scope :current,   -> { where(status_code: 1) }
+  scope :active,    -> { lt(status_code: 3) }
+  scope :finished,  -> { where(status_code: 3) }
+
+  def status
+    %w{open closed finalized}[self.status_code]
+  end
 
   def import_games
     return false if self.games.exists? || self.url_ics.nil?
@@ -178,20 +182,20 @@ class Team
     self.games.gt(time: Time.now).first
   end
   def open
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
   def close
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
   def finalize
     # update rankings
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
   def active?
-    self.status < 3
+    self.status_code < 3
   end
   def finalized?
-    self.status == 8
+    self.status_code == 8
   end
   def update_season_rankings
     self.seasons.map(&:calculate_points)
@@ -214,7 +218,7 @@ class Game
 
   field :opponent,      type: String
   field :time,          type: Time
-  field :status,        type: Integer,  default: 0
+  field :status_code,   type: Integer,  default: 0
   field :number,        type: Integer # => game number, i.e. (1..13) or (1..40)
   field :points,        type: Integer # this is the sum of all point gained by players
   field :cost,          type: Integer
@@ -222,23 +226,26 @@ class Game
 
   default_scope -> { asc(:number) }
 
-  # scope :open_for_picking, -> { where(status: 4) }
+  # scope :open_for_picking, -> { where(status_code: 4) }
 
+  def status
+    %w{prepare price confirm open lock stats score finalize next}[self.status_code]
+  end
   def prepare
     return if self.performances.exists?
     ids = self.team.players.map{ |player| player.performances.create }.map(&:_id)
     self.performance_ids = ids
     self.team.update_attribute(:performance_ids, self.team.performance_ids + ids)
     # self.team.performances.concat(self.team.players.map{ |player| player.performances.create })
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
   def price(arr = nil)
-    return if status >= 2 || arr.nil?
+    return if status_code >= 2 || arr.nil?
     arr.each do |id, price|
       next if price.to_i == 1 # modify process to not even pass these ones
       self.performances.find(id).update_attribute(:price, price.to_i)
     end
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
   def scoring_guide
     ScoringGuide.current(self.team.sport)
@@ -249,12 +256,12 @@ class Game
     # return data from here
   end
   def update_data
-    return false unless self.status.between?(4,5)
+    return false unless self.status_code.between?(4,5)
     # verify google data is available
-    self.update_attribute(:status, 6)
+    self.update_attribute(:status_code, 6)
   end
   def score(data = nil)
-    return false unless self.status.between?(4,5)
+    return false unless self.status_code.between?(4,5)
     points_arr = self.scoring_guide.points
     data.map do |hash|
       perf = Player.find_by(hash[:identity]).performances.find_by(game: self._id)
@@ -262,30 +269,29 @@ class Game
     end
     self.scoring_guide.score_picksets(self.picksets)
     # self.clean
-    self.update_attribute(:status, 7)
+    self.update_attribute(:status_code, 7)
   end
   def update_standings
-    return false unless self.status == 7
+    return false unless self.status_code == 7
     self.team.update_season_rankings
-    self.inc(status: 1)
+    self.inc(status_code: 1)
   end
-
   def update_time(time = nil)
     time ||= self.time
-    self.update_attributes(time: time, status: 3) if self.status == 2
+    self.update_attributes(time: time, status_code: 3) if self.status_code == 2
   end
   def clean
     self.performances.destroy_all(points: 0)
   end
   def open # need to update time somewhere
-    self.inc(status: 1) if self.status == 3
+    self.inc(status_code: 1) if self.status_code == 3
   end
   def lock
-    self.inc(status: 1) if self.status == 4
+    self.inc(status_code: 1) if self.status_code == 4
   end
 
   def open_for_picking?
-    self.status == 4
+    self.status_code == 4
   end
   def rankings
     self.picksets.order_by(rank: :asc, created_at: :asc)
@@ -331,7 +337,7 @@ class Player
     perfs.map(&:price).inject(:+) / perfs.length
   end
   def team_points_price(team)
-    games = team.games.gt(status: 6).map(&:_id)
+    games = team.games.gt(status_code: 6).map(&:_id)
     perfs = self.performances.in(game_id: games)
     n = [perfs.length, 1].max
     [perfs.map(&:points).inject(:+) / n, perfs.map(&:price).inject(:+) / n]

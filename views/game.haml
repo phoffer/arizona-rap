@@ -29,12 +29,12 @@
                 %input{type: :checkbox, name: 'picks[]', value: perf._id, checked: @picks.include?(perf._id.to_s)}
           %br
           %br
-  - elsif @game.status.between?(5,7)
+  - elsif @game.status_code.between?(5,7)
     %p Game is locked. You selected the following players:
     %ul
       - @pickset.performances.each do |perf|
         %li= "#{perf.player.first} #{perf.player.last}"
-  - elsif @game.status == 8
+  - elsif @game.status_code == 8
     %p= "Total points: #{@pickset.points}"
     %p= "Rank: #{@pickset.rank}"
     %p= "Rank points: #{@pickset.rank_points}"

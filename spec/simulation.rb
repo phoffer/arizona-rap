@@ -37,24 +37,24 @@ def add_scoring_guides
   y.each { |h| ScoringGuide.create(h) }
 end
 
-# clear         # empty db for clean run
-# puts "DB cleared @ #{Time.now}"
-# STDOUT.flush
-# Admin.create(name: 'prh', password: 'prh')
-# # admin => setup
-# add_scoring_guides                                    # => scoring guides added in advance
-# t = Team.find_by(team_f13) || Team.create(team_f13)   # => admin creates team
-# t.open                                                # => team is opened for signup
-# puts "admin setup done @ #{Time.now}"
-# STDOUT.flush
+clear         # empty db for clean run
+puts "DB cleared @ #{Time.now}"
+STDOUT.flush
+Admin.create(name: 'prh', password: 'prh')
+# admin => setup
+add_scoring_guides                                    # => scoring guides added in advance
+t = Team.find_by(team_f13) || Team.create(team_f13)   # => admin creates team
+t.open                                                # => team is opened for signup
+puts "admin setup done @ #{Time.now}"
+STDOUT.flush
 
 # users sign up
 json_data = JSON.parse(File.read('data.json')) # => fake user info
-# Admin.create(name: 'admin', password: 'admin')
+Admin.create(name: 'admin', password: 'admin')
 users = json_data['users'].map do |h|
   u = User.find_by(name: h['name']) || User.create(h)   # => user creates account
-  # team = Team.current.first._id           # => user looks up open teams and picks one (from web, using _id)
-  # u.signup_for_team(team)                 # => server signs up for season
+  team = Team.current.first._id           # => user looks up open teams and picks one (from web, using _id)
+  u.signup_for_team(team)                 # => server signs up for season
   u
 end
 puts "user signup done @ #{Time.now}"
@@ -66,17 +66,17 @@ STDOUT.flush
 1.times do |j|
   i = j + 1
 
-  # admin => getting a game ready to go
-  # g = t.next_game                 # => admin selects next games
-  # g = t.game_number(i)                 # => admin selects next games
-  # g.prepare                       # => admin prepares game (prices, confirm time)
-  # prices = g.performances.sample(15).map { |p| [p._id, rand(2..15)] } # [[_id, price],[_id, price],[_id, price]]
-  # g.price(prices)                 # => admin prices next game
-  # g.update_time(time = nil)       # => admin confirms game time
-  # g.open                          # => admin opens game for picks
-  # puts "#{g.opponent} admin prep  done @ #{Time.now}"
-  # t.reload
-  # STDOUT.flush
+  # # admin => getting a game ready to go
+  g = t.next_game                 # => admin selects next games
+  g = t.game_number(i)                 # => admin selects next games
+  g.prepare                       # => admin prepares game (prices, confirm time)
+  prices = g.performances.sample(15).map { |p| [p._id, rand(2..15)] } # [[_id, price],[_id, price],[_id, price]]
+  g.price(prices)                 # => admin prices next game
+  g.update_time(time = nil)       # => admin confirms game time
+  g.open                          # => admin opens game for picks
+  puts "#{g.opponent} admin prep  done @ #{Time.now}"
+  t.reload
+  STDOUT.flush
 
   gs = users.map do |u|            # user picking a game
     u.reload
@@ -93,14 +93,14 @@ STDOUT.flush
   STDOUT.flush
 
 
-  # admin scoring / finalizing game
-  # path = 'stats.csv'                            # => admin uploads stats.csv
-  # stats = ScoringGuide.import_stats_csv(path)   # => stats file gets parses
-  # # g = t.next_game                               # => would normally be last_game (switched to avoid time-travel issues)
-  # g = t.game_number(i)                               # => would normally be last_game (switched to avoid time-travel issues)
-  # g.score(stats)                                # => score the game
-  # g.update_standings                            # => update standings
-  # puts "#{g.opponent} admin score done @ #{Time.now}"
-  # STDOUT.flush
+  # # admin scoring / finalizing game
+  path = 'stats.csv'                            # => admin uploads stats.csv
+  stats = ScoringGuide.import_stats_csv(path)   # => stats file gets parses
+  # g = t.next_game                               # => would normally be last_game (switched to avoid time-travel issues)
+  g = t.game_number(i)                               # => would normally be last_game (switched to avoid time-travel issues)
+  g.score(stats)                                # => score the game
+  g.update_standings                            # => update standings
+  puts "#{g.opponent} admin score done @ #{Time.now}"
+  STDOUT.flush
 end
 # puts t.game_number(i+1).inspect
