@@ -14,8 +14,8 @@ require 'json'
 
 class Rap < Sinatra::Base
   register Sinatra::Namespace
-  # enable :sessions
-  # set :session_secret, ENV['SECRET']
+  enable :sessions
+  set :session_secret, ENV['SECRET']
   # disable :logging
   set :haml, format: :html5
 
@@ -44,7 +44,7 @@ class Rap < Sinatra::Base
   before do
     @js = []
     @css = []
-    @user_id = (session['user_id'] || request.cookies['user_id'] || '')
+    @user_id = (session[:user_id] || request.cookies['user_id'] || '')
   end
 
   helpers do

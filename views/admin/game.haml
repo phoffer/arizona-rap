@@ -1,30 +1,6 @@
+=haml :game_info
+
 - @url_arr = %w{prepare price confirm open lock stats score finalize next}
-- case @game.status
-- when 0
-  Game in the system, but needs to be prepared for pricing.
-- when 1
-  Game is ready for pricing.
-- when 2
-  Prices are set. Updates can be made. Gametime needs to be confirmed
-- when 3
-  Game is ready for picks. Open for picking?
-- when 4
-  Game is open for picks. Close game picking? (Picks will be rejected after gametime, so this is not necessary. It does allow picks to be visible to the public.)
-- when 5
-  Game has begun (and possibly ended). Ready to submit stats?
-- when 6
-  Stats have been loaded. Score all picksets?
-- when 7
-  Picksets have been scored. Finalize game and standings?
-- when 8
-  Game has been finalized. Nothing to do now.
-%br
-%a{href: "#{@base_url}status/#{@url_arr[@game.status]}"}= @url_arr[@game.status]
-%br
-%br
-%br
+
 =haml "admin/game/#{@url_arr[@game.status]}".to_sym
 
-
-%p= @game.opponent
-%p= @game.time

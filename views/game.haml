@@ -1,2 +1,51 @@
-%p= @game.opponent
-%p= @game.time
+=haml :game_info
+- if @current_user
+  - if @pickset = @season.picksets.find_by(game: @game)
+    - @picks = @pickset.performance_ids.map(&:to_s)
+    %p= "Picks last updated at #{@pickset.updated_at}"
+    %p= "Total cost: #{@pickset.cost}"
+  - else
+    - @pickset ||= Pickset.new
+    - @picks = []
+  - if @game.open_for_picking?
+    %form{method: "post"}
+      %input{ type: 'submit', value: 'submit' }
+      %table
+        %thead
+          %th Number
+          %th Last Name
+          %th First Name
+          %th Price
+          %th Select
+        %tbody
+          - @game.performances.sort_by(&:price).reverse.each do |perf|
+            %tr
+              - p = perf.player
+              %td= p.number
+              %td= p.last
+              %td= p.first
+              %td= perf.price
+              %td
+                %input{type: :checkbox, name: 'picks[]', value: perf._id, checked: @picks.include?(perf._id.to_s)}
+          %br
+          %br
+  - elsif @game.status.between?(5,7)
+    %p Game is locked. You selected the following players:
+    %ul
+      - @pickset.performances.each do |perf|
+        %li= "#{perf.player.first} #{perf.player.last}"
+  - elsif @game.status == 8
+    %p= "Total points: #{@pickset.points}"
+    %p= "Rank: #{@pickset.rank}"
+    %p= "Rank points: #{@pickset.rank_points}"
+    %table
+      %thead
+        %th Rank
+        %th Poster
+        %th Points
+      %tbody
+        - @game.rankings.each do |pick|
+          %tr
+            %td= pick.rank
+            %td= pick.season.user.name
+            %td= pick.points

@@ -9,7 +9,7 @@
   - @teams.each do |t|
     %tr
       %td
-        %a{href: "#{@base_url}#{t.code}"}= t.code
+        %a{href: "/admin/#{t.code}/"}= t.code
       %td= t.year
       %td= t.sport
       %td= t.games.count

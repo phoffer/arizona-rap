@@ -11,7 +11,10 @@
   - @teams.each do |t|
     %tr
       %td
-        %a{href: "/#{t.code}/"}= t.code
+        - if @current_user.seasons.find_by(team: t._id)
+          %a{href: "/#{t.code}/"}= t.code
+        - else
+          %a{href: "/signup/#{t.code}"} Signup
       %td= t.year
       %td= t.sport
 

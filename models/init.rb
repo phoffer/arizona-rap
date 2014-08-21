@@ -8,6 +8,7 @@ require 'icalendar'
 require 'open-uri'
 require 'nokogiri'
 require 'bcrypt'
+require 'csv'
 
 # dir_config = Pathname.getwd
 # puts dir_config

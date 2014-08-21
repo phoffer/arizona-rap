@@ -1,3 +1,17 @@
+
+- if @team.open_games.empty?
+  .next
+    %h3 Next Game
+    - next_game = @team.next_game
+    %p= next_game.opponent
+    %p= next_game.status
+- else
+  .open
+  %h3 Open Games
+  - @team.open_games.each do |g|
+    %p= g.opponent
+    %a{href: "/#{@team.code}/games/#{g.number}/"} Make Picks
+
 %table
   %thead
     %th Number
@@ -7,7 +21,7 @@
   - @team.games.each do |g|
     %tr
       %td
-        %a{href: "#{@base_url}#{@team.code}/games/#{g.number}"}= g.number
+        %a{href: "/#{@team.code}/games/#{g.number}/"}= g.number
       %td= g.opponent
       %td= g.time
       %td= g.status

@@ -26,7 +26,7 @@ class User
     self.seasons.select(&:active?)
   end
   def admin?
-    self.role.zero?
+    false
   end
 
   class << self
@@ -39,6 +39,9 @@ end
 class Admin < User
   after_create do |user|
     user.update_attribute(:role, 0)
+  end
+  def admin?
+    self.role.zero?
   end
 end
 
@@ -86,6 +89,11 @@ class Pickset
   include Mongoid::Timestamps
   after_create :validate_game
 
+  def update_picks(picks)
+    self.performance_ids = picks
+    self.cost = Performance.find(self.performance_ids).map(&:price).inject(:+)
+    self.save
+  end
   def players
     # Player.find(self.player_ids)
     self.performances.map(&:player)
@@ -188,6 +196,9 @@ class Team
   def update_season_rankings
     self.seasons.map(&:calculate_points)
     self.seasons.order_by(rank_points: :desc, points: :desc).each_with_index {|s, i| s.update_attribute(:rank, i+1) }
+  end
+  def rankings
+    self.seasons.order_by(rank: :asc, points: :desc)
   end
   class << self
     def webpage_of_schedules
@@ -320,7 +331,8 @@ class Player
     perfs.map(&:price).inject(:+) / perfs.length
   end
   def team_points_price(team)
-    perfs = self.performances.where(team: team)
+    games = team.games.gt(status: 6).map(&:_id)
+    perfs = self.performances.in(game_id: games)
     n = [perfs.length, 1].max
     [perfs.map(&:points).inject(:+) / n, perfs.map(&:price).inject(:+) / n]
   end
@@ -414,8 +426,8 @@ class ScoringGuide
     def current(sport)
       where(sport: sport).lt(effective_at: Time.now).gt(expires_at: Time.now).first
     end
-    def import_stats_csv(file)
-      path = 'stats.csv'
+    def import_stats_csv(path)
+      # path = 'stats.csv'
       stats = CSV.read(path, headers: true, converters: :numeric)
       sep = stats.first.index(nil) # => values
       stats.map do |row|

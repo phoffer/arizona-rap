@@ -8,13 +8,14 @@ class Rap < Sinatra::Base
     before do
       @current_user = Admin.find(@user_id)   # => change to Admin.find(id)
       redirect '/' unless @current_user
-      @base_url = '/admin/'
+      # @base_url = '/admin/'
+      # puts @base_url
     end
     get do
       @teams = Team.all
       # list teams and create a new team
       # haml :index
-      @content = {verb: r.env['REQUEST_METHOD'], path: request.path, params: params, note: 'admin area'}
+      @content = {verb: request.request_method, path: request.path, params: params, note: 'admin area'}
       haml :'admin/main'
     end
     post 'teams' do
@@ -27,12 +28,13 @@ class Rap < Sinatra::Base
 
       redirect "/admin/#{t.code}/"
     end
-    namespace ':team_code/' do |team_code|
+    namespace ':team_code/' do
       before do
-        @team = Team.find_by(code: team_code)
-        @base_url << "#{@team.code}/"
+        @team = Team.find_by(code: params[:team_code])
+        # @base_url << "#{@team.code}/"
       end
       get do
+        @team = Team.find_by(code: params[:team_code])
         haml :'admin/team'
       end
       post do
@@ -58,14 +60,16 @@ class Rap < Sinatra::Base
       namespace 'games/' do
         get do
           # @reservations = @user.reservations(params.verify)
-          {verb: r.env['REQUEST_METHOD'], path: request.path, params: params}.to_json
+          {verb: request.request_method, path: request.path, params: params}.to_json
         end
-        namespace ':game_number/' do |game_number|
+        namespace ':game_number/' do
           before do
-            @game = @team.game_number(game_number)
-            @base_url << "games/#{@game.number}/"
+            @game = @team.game_number(params[:game_number])
+            # @base_url << "games/#{@game.number}/"
           end
           get do
+            @team = Team.find_by(code: params[:team_code])
+            @game = @team.game_number(params[:game_number])
             haml :'admin/game'
           end
           get 'stats' do
@@ -89,7 +93,6 @@ class Rap < Sinatra::Base
               redirect request.referrer
             end
             post 'price' do
-              puts 'posted'
               # validate params['prices'] is a proper array
               # @prices = params['ids'].zip(params['dol'])
               # puts @prices.inspect
@@ -102,6 +105,10 @@ class Rap < Sinatra::Base
             end
             get 'confirm' do
               @game.update_time(params['time'])
+              redirect request.referrer
+            end
+            post 'confirm' do
+              @game.update_time(nil)
               redirect request.referrer
             end
             get 'open' do
@@ -119,6 +126,13 @@ class Rap < Sinatra::Base
               path = 'stats.csv'
               stats = ScoringGuide.import_stats_csv(path)
               @game.score(stats) # ok i guess we'll score it too. if it's a file upload
+              redirect request.referrer
+            end
+            post 'stats' do
+              # puts params['stats'].inspect
+              stats = ScoringGuide.import_stats_csv(params[:stats][:tempfile].path)
+              @game.score(stats)
+              @game.update_standings
               redirect request.referrer
             end
             get 'score' do

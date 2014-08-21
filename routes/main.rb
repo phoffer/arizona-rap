@@ -1,26 +1,38 @@
 class Rap < Sinatra::Base
   get '/assets/css/:file' do |filename|
-    # puts "scss/#{filename.gsub('.css', '')}"
     content_type "text/css"
     scss "scss/#{filename.gsub('.css', '')}".to_sym
-    # 'helo'
   end
   namespace '/' do |r|
     before do
       # set_view_subdir "mobile" if request['X_MOBILE_DEVICE']
       @user_id = (session['user_id'] || request.cookies['user_id'] || '')
-      session['return_url'] = nil
       @current_user = User.find(@user_id)
+
       @base_url = '/'
     end
     get do
-      @teams = Team.all
-      haml :main
+      session['something'] = 2
+      if @current_user
+        @teams = Team.all
+        @seasons = @current_user.seasons
+        haml :main
+      else
+        haml :welcome
+      end
     end
-    namespace ':team_code/' do |team_code|
+    get 'signup/:team_code' do |code|
+      @current_user.signup_for_team(Team.find_by(code: code))
+      redirect "/#{code}/"
+    end
+    namespace ':team_code/' do
       before do
-        @team = Team.find_by(code: team_code)
-        session['team'] = team_code
+        pass if request.path['auth'] or request.path['assets']
+        @current_user = User.find(@user_id)
+        @team = Team.find_by(code: params[:team_code])
+        @season = @current_user.seasons.find_by(team: @team)
+        # redirect '/' unless @current_user
+        # session['team'] = team_code
       end
       get do
         # {verb: request.request_method, path: r.full_path_info, params: r.params, session: session}.to_json
@@ -38,15 +50,27 @@ class Rap < Sinatra::Base
         get do
           @games = @team.games
           # @reservations = @user.reservations(params.verify)
-          {verb: request.request_method, path: r.full_path_info, params: r.params}.to_json
           haml :games
         end
-        namespace ':game_number/' do |game_number|
+        namespace ':game_number/' do
           before do
-            @game = @team.game_number(game_number.to_i)
+            @team = Team.find_by(code: params[:team_code])
+            @season = @current_user.seasons.find_by(team: @team)
+            @game = @team.game_number(params[:game_number].to_i)
           end
           get do
+            @current_user = User.find(@user_id)
+            @team = Team.find_by(code: params[:team_code])
+            @season = @current_user.seasons.find_by(team: @team)
+            @game = @team.game_number(params[:game_number].to_i)
             haml :game
+          end
+          post do
+            @picks = params[:picks]
+            @pickset = @season.picksets.find_or_create_by(game: @game)
+            @pickset.update_picks(@picks)
+            # @season.picksets.create(performance_ids: @picks, game: @game)
+            redirect request.referrer
           end
           get 'stats' do
             # stats from game

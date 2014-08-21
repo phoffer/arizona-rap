@@ -24,8 +24,24 @@
   - @team.games.each do |g|
     %tr
       %td
-        %a{href: "#{@base_url}games/#{g.number}"}= g.number
-      %td= g.opponent
+        %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.number
+      %td
+        %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
       %td= g.status
 
+
+%h3 Standings
+%table
+  %thead
+    %th Rank
+    %th Points
+    %th Poster
+    %th Point total from games
+  %tbody
+    - @team.rankings.each do |season|
+      %tr
+        %td= season.rank
+        %td= season.rank_points
+        %td= season.user.name
+        %td= season.points

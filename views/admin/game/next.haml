@@ -1,0 +1,16 @@
+%p Game has been finalized. Nothing to do now.
+%p #OnToTheNextOne
+%a{href: "status/#{@url_arr[@game.status]}"}= @url_arr[@game.status]
+
+%h2 Results
+%table
+  %thead
+    %th Rank
+    %th Poster
+    %th Points
+  %tbody
+    - @game.rankings.each do |pick|
+      %tr
+        %td= pick.rank
+        %td= pick.season.user.name
+        %td= pick.points
