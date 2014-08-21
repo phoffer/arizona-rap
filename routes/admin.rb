@@ -3,7 +3,9 @@ class Rap < Sinatra::Base
     @js = []
     @css = []
   end
-
+  get '/admin' do
+    redirect '/admin/'
+  end
   namespace '/admin/' do
     before do
       @current_user = Admin.find(@user_id)   # => change to Admin.find(id)
