@@ -8,11 +8,11 @@
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %meta{:content => "PRH", :name => "author"}
     %meta{:content => "", :name => "description"}
-    %link{ rel: "stylesheet", type: "text/css", href: "/assets/styles/main.css" }
+    %link{ rel: "stylesheet", type: "text/css", href: "/assets/css/main.css" }
     %script{src: '//code.jquery.com/jquery-2.0.0.min.js'}
     %script{src: '/assets/js/admin.js'}
   %body
-    =render :menu
+    =haml :menu
     %section.wrap
       %article.content
         =yield

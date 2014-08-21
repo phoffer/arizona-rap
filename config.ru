@@ -8,5 +8,5 @@ require ::File.join( ::File.dirname(__FILE__), 'app' )
 #   # 'application/roll' => proc { |body| 'never gonna give you up'     }
 # }
 
-run RodaApp.app
+run Rap.new
 

@@ -23,7 +23,7 @@
 %br
 %br
 %br
-=render "admin/game/#{@url_arr[@game.status]}"
+=haml "admin/game/#{@url_arr[@game.status]}".to_sym
 
 
 %p= @game.opponent

@@ -1,85 +1,68 @@
-require 'roda'
-class RodaApp < Roda
-  route 'main' do |r|
-    set_view_subdir "mobile" if r.env['X_MOBILE_DEVICE']
-    r.session['return_url'] = nil
-    # user_id = (r.session['user_id'] || r.cookies['user_id'] || '')
-    @current_user = User.find(@user_id)
-    @base_url = '/'
-    r.root do
-      @teams = Team.all.to_a
-      view :main
+class Rap < Sinatra::Base
+  get '/assets/css/:file' do |filename|
+    # puts "scss/#{filename.gsub('.css', '')}"
+    content_type "text/css"
+    scss "scss/#{filename.gsub('.css', '')}".to_sym
+    # 'helo'
+  end
+  namespace '/' do |r|
+    before do
+      # set_view_subdir "mobile" if request['X_MOBILE_DEVICE']
+      @user_id = (session['user_id'] || request.cookies['user_id'] || '')
+      session['return_url'] = nil
+      @current_user = User.find(@user_id)
+      @base_url = '/'
     end
-    r.on ':team_code' do |team_code|
-      @team = Team.find_by(code: team_code)
-      puts @team
-      puts 'hello'
-      r.session['team'] = team_code
-      r.is do
-        r.redirect r.full_path_info + '/'
+    get do
+      @teams = Team.all
+      haml :main
+    end
+    namespace ':team_code/' do |team_code|
+      before do
+        @team = Team.find_by(code: team_code)
+        session['team'] = team_code
       end
-      r.root do
-        {verb: r.env['REQUEST_METHOD'], path: r.full_path_info, params: r.params, session: r.session}.to_json
-        view :team
+      get do
+        # {verb: request.request_method, path: r.full_path_info, params: r.params, session: session}.to_json
+        haml :team
       end
-      r.on 'standings' do
-        r.is do
-          r.redirect r.full_path_info + '/'
-        end
-        r.root do
+      namespace 'standings/' do
+        get do
           "currents standings and overview"
         end
-        r.on ':user_id' do |user_id|
-          # @user = User.find(user_id)
-          r.get do
-            # @p
-          end
+        get ':user_id' do |user_id|
+
         end
       end
-      r.on 'games' do
-        r.is do
-          r.redirect r.full_path_info + '/'
-        end
-        r.root do
+      namespace 'games/' do
+        get do
           @games = @team.games
           # @reservations = @user.reservations(params.verify)
-          {verb: r.env['REQUEST_METHOD'], path: r.full_path_info, params: r.params}.to_json
-          view :games
+          {verb: request.request_method, path: r.full_path_info, params: r.params}.to_json
+          haml :games
         end
-        r.on ':game_number' do |game_number|
-          @game = @team.game_number(game_number.to_i)
-          r.is do
-            r.redirect r.full_path_info + '/'
+        namespace ':game_number/' do |game_number|
+          before do
+            @game = @team.game_number(game_number.to_i)
           end
-          puts game_number
-          # @game = @team.find_by(number: game_number)
-          r.root do
-            # @r
-            # puts @team.inspect
-            # @game.to_json
-            view :game
+          get do
+            haml :game
           end
-          r.get 'stats' do
+          get 'stats' do
             # stats from game
           end
-          r.get 'results' do
+          get 'results' do
             # results from game => points for picksets, rankings
           end
         end
       end
 
-      r.on 'players' do
-        r.is do
-          r.redirect r.full_path_info + '/'
+      namespace 'players/' do
+        get do
+          {verb: request.request_method, path: r.full_path_info, params: r.params}.to_json
         end
-        r.root do
-          {verb: r.env['REQUEST_METHOD'], path: r.full_path_info, params: r.params}.to_json
-        end
-        r.on ':jersey' do |jersey|
+        get ':jersey' do |jersey|
           # @player = @team.find_by(jersey: jersey)
-          r.root do
-            # @a
-          end
         end
       end
     end

@@ -1,30 +1,24 @@
-class RodaApp < Roda
-
-  route 'auth' do |r|
-    set_view_subdir "admin"
-    r.post 'login' do
-      # log the user in
-      # puts r.params['id']
-      # puts r.params['password']
-      if @current_user = User.authenticate(r.params['id'], r.params['password']) #|| Admin.authenticate(r.params['id'], r.params['password'])
-        # puts 'auth success'
-        if r.params['remember'] or r.env['X_MOBILE_DEVICE']
+class Rap < Sinatra::Base
+  namespace '/auth' do
+    post 'login' do
+      if @current_user = User.authenticate(params['id'], params['password']) #|| Admin.authenticate(params['id'], params['password'])
+        if params['remember'] or request['X_MOBILE_DEVICE']
           response.set_cookie("user_id", value: @current_user._id, expires: Time.now+24*60*60, path: '/')
-          # r.session['user_id'] = @current_user._id
+          # session['user_id'] = @current_user._id
         else
-          r.session['user_id'] = @current_user._id
+          session['user_id'] = @current_user._id
         end
       else
-        r.session['return_url'] = '/'
+        session['return_url'] = '/'
       end
-      # puts r.session['_id']
-      r.redirect r.referrer
+      # puts session['_id']
+      redirect request.referrer
       # do something here if @_request.xhr?
     end
-    r.post 'signup' do
+    post 'signup' do
       begin
-        name = r.params['name']
-        password = r.params['password']
+        name = params['name']
+        password = params['password']
         @current_user = User.create(name: name, password: password)
         response.set_cookie('user_id', value: @current_user._id, expires: Time.now+24*60*60, path: '/')
       rescue Exception => e
@@ -32,12 +26,12 @@ class RodaApp < Roda
       ensure
         # ensure something
       end
-      r.redirect '/'
+      redirect '/'
     end
-    r.get 'logout' do
-      r.session['user_id'] = nil
+    get 'logout' do
+      session['user_id'] = nil
       response.delete_cookie('user_id', path: '/')
-      r.redirect '/'
+      redirect '/'
     end
   end
 end

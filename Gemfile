@@ -15,15 +15,15 @@ group :development do
 end
 
 # sinatra
-# gem 'sinatra', require: 'sinatra/base'
-# gem 'sinatra-contrib'
+gem 'sinatra', require: 'sinatra/base'
+gem 'sinatra-contrib', require: 'sinatra/namespace'
 # gem 'sinatra-activerecord'
 
 # grape
 # gem 'grape'
 
 # roda
-gem 'roda', github: 'jeremyevans/roda'
+# gem 'roda', github: 'jeremyevans/roda'
 
 
 #############
