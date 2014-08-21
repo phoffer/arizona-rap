@@ -3,6 +3,13 @@ production:
   sessions:
     default:
       uri: <%= ENV['MONGOLAB_URI'] %>
+  options:
+    include_root_in_json: false
+    include_type_for_serialization: false
+    raise_not_found_error: false
+    scope_overwrite_exception: true
+    # use_activesupport_time_zone: false
+    use_utc: false
 development:
   sessions:
     default:
