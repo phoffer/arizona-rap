@@ -5,7 +5,9 @@ Provide system to support both football and basketball RAP with minimal administ
 Heroku TZ has been set to America/Phoenix.
 
 # TODO
-* fill in controllers
-* all views
+
+* better navigation
+* instructions for users/admin
+* post/message on forum automatically for sign up, results, pricing/game open for picks
 * write actual tests
 
