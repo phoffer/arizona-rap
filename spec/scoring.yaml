@@ -11,6 +11,7 @@
   :expires_at: 2015-08-18 15:55:39.753630000 -07:00
   tiebreakers:
     points: desc
+    difference: asc
     created_at: asc
 - sport: football
   key:
@@ -43,4 +44,5 @@
   :expires_at: 2015-08-18 15:55:39.753640000 -07:00
   tiebreakers:
     points: desc
+    difference: asc
     created_at: asc

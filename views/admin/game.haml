@@ -1,6 +1,6 @@
 =haml :game_info
 
-- @url_arr = %w{prepare price confirm open lock stats score finalize next}
+/ # - @url_arr = %w{prepare price confirm open lock stats score finalize next}
 
-=haml "admin/game/#{@game.status}".to_sym
+=haml "admin/game/#{@game.status_next}".to_sym
 

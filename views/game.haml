@@ -2,13 +2,17 @@
 - if @current_user
   - if @pickset = @season.picksets.find_by(game: @game)
     - @picks = @pickset.performance_ids.map(&:to_s)
+    - total = @pickset.total
     %p= "Picks last updated at #{@pickset.updated_at}"
     %p= "Total cost: #{@pickset.cost}"
+    %p= "Total points (tiebreaker): #{@pickset.total}"
   - else
     - @pickset ||= Pickset.new
     - @picks = []
+    - @total = 0
   - if @game.open_for_picking?
     %form{method: "post"}
+      %input{ type: 'number', name: 'total', value: @total } Total
       %input{ type: 'submit', value: 'submit' }
       %table
         %thead
@@ -43,9 +47,13 @@
         %th Rank
         %th Poster
         %th Points
+        %th Tiebreaker
+        %th Cost
       %tbody
         - @game.rankings.each do |pick|
           %tr
             %td= pick.rank
             %td= pick.season.user.name
             %td= pick.points
+            %td= pick.difference
+            %td= pick.cost

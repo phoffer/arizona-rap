@@ -68,7 +68,7 @@ class Rap < Sinatra::Base
           post do
             @picks = params[:picks]
             @pickset = @season.picksets.find_or_create_by(game: @game)
-            @pickset.update_picks(@picks)
+            @pickset.update_picks(@picks, params[:total])
             # @season.picksets.create(performance_ids: @picks, game: @game)
             redirect request.referrer
           end

@@ -86,10 +86,15 @@ class Pickset
   field :points,            type: Integer,  default: 0
   field :rank,              type: Integer # need to examine this in case of ties...
   field :rank_points,       type: Integer,  default: 0
+  field :total,             type: Integer,  default: 0
+  field :difference,        type: Integer,  default: 1000
   include Mongoid::Timestamps
   after_create :validate_game
+  scope :valid, ->(game) { lt(cost: 51, updated_at: game.time) }
 
-  def update_picks(picks)
+
+  def update_picks(picks, total = nil)
+    self.total = total if total
     self.performance_ids = picks
     self.cost = Performance.find(self.performance_ids).map(&:price).inject(:+)
     self.save
@@ -104,10 +109,15 @@ class Pickset
   def performances=(arr)
     self.update_attribute(:performance_ids, arr)
   end
-  def score(sport)
-    base = sport == :basketball ? 50 - self.cost : 0
-    self.points = self.performances.map(&:points).inject(base, :+)
-    self.save
+  def score(sport, total)
+    if self.cost > 50
+      self.update_attributes(points: 0)
+    else
+      base = sport == :basketball ? 50 - self.cost : 0
+      self.points = self.performances.map(&:points).inject(base, :+)
+      self.difference = (self.total - total).abs
+      self.save
+    end
   end
   def validate_game
     return if self.game_id
@@ -147,8 +157,11 @@ class Team
   scope :active,    -> { lt(status_code: 3) }
   scope :finished,  -> { where(status_code: 3) }
 
-  def status
-    %w{open closed finalized}[self.status_code]
+  def status(n = self.status_code)
+    %w{created open closed final}[n]
+  end
+  def status_next
+    self.status(self.status_code + 1)
   end
 
   def import_games
@@ -223,13 +236,20 @@ class Game
   field :points,        type: Integer # this is the sum of all point gained by players
   field :cost,          type: Integer
   field :ics_id,        type: String
+  field :total,         type: Integer
 
   default_scope -> { asc(:number) }
 
   # scope :open_for_picking, -> { where(status_code: 4) }
 
-  def status
-    %w{prepare price confirm open lock stats score finalize next}[self.status_code]
+  def status(n = self.status_code)
+    %w{created prepared priced confirmed open locked stats scored final next}[n]
+  end
+  def status_next
+    self.status(self.status_code + 1)
+  end
+  def valid_picksets
+    self.picksets.valid(self)
   end
   def prepare
     return if self.performances.exists?
@@ -260,14 +280,15 @@ class Game
     # verify google data is available
     self.update_attribute(:status_code, 6)
   end
-  def score(data = nil)
+  def score(data = nil, total = 0)
     return false unless self.status_code.between?(4,5)
+    self.update_attribute(:total, total.to_i)
     points_arr = self.scoring_guide.points
     data.map do |hash|
       perf = Player.find_by(hash[:identity]).performances.find_by(game: self._id)
       perf.score(hash[:stats], points_arr)
     end
-    self.scoring_guide.score_picksets(self.picksets)
+    self.scoring_guide.score_picksets(self.picksets, total.to_i)
     # self.clean
     self.update_attribute(:status_code, 7)
   end
@@ -414,15 +435,16 @@ class ScoringGuide
   def score_performances(performances, data)
     # score performances
   end
-  def score_picksets(picksets)
-    picksets.each { |p| p.score(self.sport) }
+  def score_picksets(picksets, total)
+    picksets.each { |p| p.score(self.sport, total) }
     case sport
     when :football
       # rank football picksets
     when :basketball
       # rank basketball picksets
     end
-    order = picksets.order_by(self.tiebreakers)  # picksets are sorted properly before being passed
+    # picksets.select{ |p| p.cost > 50 }.each{ |p| p.update_attribute(:points, 0) }
+    order = picksets.order_by(self.tiebreakers)
     order.each_with_index do |p, i|
       rank_points = i.between?(0,19) ? 20-i : 0
       p.update_attributes(rank: i+1, rank_points: rank_points)

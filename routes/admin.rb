@@ -133,7 +133,7 @@ class Rap < Sinatra::Base
             post 'stats' do
               # puts params['stats'].inspect
               stats = ScoringGuide.import_stats_csv(params[:stats][:tempfile].path)
-              @game.score(stats)
+              @game.score(stats, params[:total])
               @game.update_standings
               redirect request.referrer
             end

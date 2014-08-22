@@ -1,5 +1,5 @@
 
-%p= @team.status_code
+%p= @team.status
 / %br
 - if @team.status_code.zero?
   %a{href: "#{@base_url}#{@team.code}/open"} Open for signup and play
@@ -20,7 +20,7 @@
     %th Number
     %th Opponent
     %th Time
-    %th status_code
+    %th status
   - @team.games.each do |g|
     %tr
       %td
@@ -28,7 +28,7 @@
       %td
         %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
-      %td= g.status_code
+      %td= g.status
 
 
 %h3 Standings

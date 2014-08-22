@@ -1,6 +1,6 @@
 %p Game is open for picks. Close game picking? (Picks will be rejected after gametime, so this is not necessary. It does allow picks to be visible to the public.)
 - # game is locked.
 - # form for stats upload
-%a{href: "status_code/#{@url_arr[@game.status_code]}"}= @url_arr[@game.status_code]
+%a{href: "status/lock"} lock
 
-%form{method: :post, action: "#{@base_url}status_code/#{@url_arr[@game.status_code]}"}
+%form{method: :post, action: "#{@base_url}status/lock"}

@@ -1,6 +1,6 @@
 %p Prices are set. Updates can be made. Gametime needs to be confirmed
 
-%form{method: :post, action: "status_code/#{@url_arr[@game.status_code]}"}
+%form{method: :post, action: "status/confirm"}
   %input{type: :disabled, value: @game.time }
   %br
   %input{type: :time, name: 'time' }

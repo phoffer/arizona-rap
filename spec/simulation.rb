@@ -63,7 +63,7 @@ STDOUT.flush
 
 # i = 1
 # t.games.length.times do |j|
-1.times do |j|
+3.times do |j|
   i = j + 1
 
   # # admin => getting a game ready to go
@@ -86,7 +86,7 @@ STDOUT.flush
     games = season.open_games     # => user is presented games open for picking, season.open_games == season.team.open_games
     game  = games.last            # => user selects game
     picks = game.performances.sample(15).map(&:_id).map(&:to_s) # fake pick data [_id, _id, _id, ...]
-    pick = season.picksets.create(performance_ids: picks, game: game)       # => user submits picks
+    pick = season.picksets.create(performance_ids: picks, game: game, total: rand(30..70))       # => user submits picks
     game.opponent
   end
   puts "#{gs.uniq.first} user picks  done @ #{Time.now}"
@@ -98,7 +98,7 @@ STDOUT.flush
   stats = ScoringGuide.import_stats_csv(path)   # => stats file gets parses
   # g = t.next_game                               # => would normally be last_game (switched to avoid time-travel issues)
   g = t.game_number(i)                               # => would normally be last_game (switched to avoid time-travel issues)
-  g.score(stats)                                # => score the game
+  g.score(stats, rand(30..70))                   # => score the game
   g.update_standings                            # => update standings
   puts "#{g.opponent} admin score done @ #{Time.now}"
   STDOUT.flush

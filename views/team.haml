@@ -4,7 +4,7 @@
     %h3 Next Game
     - next_game = @team.next_game
     %p= next_game.opponent
-    %p= next_game.status_code
+    %p= next_game.status
 - else
   .open
   %h3 Open Games
@@ -17,12 +17,12 @@
     %th Number
     %th Opponent
     %th Time
-    %th status_code
+    %th status
   - @team.games.each do |g|
     %tr
       %td
         %a{href: "/#{@team.code}/games/#{g.number}/"}= g.number
       %td= g.opponent
       %td= g.time
-      %td= g.status_code
+      %td= g.status
 

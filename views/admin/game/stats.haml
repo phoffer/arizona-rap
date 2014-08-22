@@ -2,8 +2,11 @@
 - # form for stats upload
 Need to upload the stats
 
-%form{method: :post, enctype: "multipart/form-data", action: "status_code/#{@url_arr[@game.status_code]}"}
+%form{method: :post, enctype: "multipart/form-data", action: "status/stats"}
   %label{ for: "file"} Filename:
   %input{ type:"file", name:"stats", id:"stats"}
+  %br
+  %label{ for: "total"} Total:
+  %input{ type:"number", name:"total", id:"total"}
   %br
   %input{ type:"submit", name:"submit", value:"Submit" }
