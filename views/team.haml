@@ -2,14 +2,14 @@
 - if @team.open_games.empty?
   .next
     %h3 Next Game
-    - next_game = @team.next_game
-    %p= next_game.opponent
-    %p= next_game.status
+    - @game = @team.next_game
+    =haml :game_info
 - else
   .open
   %h3 Open Games
   - @team.open_games.each do |g|
-    %p= g.opponent
+    - @game = g
+    =haml :game_info
     %a{href: "/#{@team.code}/games/#{g.number}/"} Make Picks
 
 %table

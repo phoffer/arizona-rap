@@ -16,6 +16,8 @@
         - if @team
           %li
             %a{ href: "/#{@team.code}/standings" } Standings
+          %li
+            %a{ href: "/rules_#{@team.sport}"} Rules
       %li
         %a{ href: '/auth/logout' } Log Out
     - else

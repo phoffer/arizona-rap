@@ -3,6 +3,12 @@ class Rap < Sinatra::Base
     content_type "text/css"
     scss "scss/#{filename.gsub('.css', '')}".to_sym
   end
+  get '/rules_football' do
+    haml :rules_football
+  end
+  get '/rules_basketball' do
+    haml :rules_basketball
+  end
   namespace '/' do |r|
     before do
       # set_view_subdir "mobile" if request['X_MOBILE_DEVICE']
