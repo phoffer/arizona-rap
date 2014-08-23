@@ -74,7 +74,7 @@ section.container-fluid {
 // text-decoration: none;
 // background-color: #eee;
 // }
-.Flexbox {
+body {
   display: flex;
   display: -webkit-flex;
   min-height: 100vh;
@@ -82,7 +82,7 @@ section.container-fluid {
   -webkit-flex-direction: column;
 }
 
-.Flexbox-body {
+.flexbox {
   display: flex;
   flex: 1;
   display: -webkit-flex;
