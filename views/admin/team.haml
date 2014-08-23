@@ -1,5 +1,5 @@
-- classes = {notready: 'info', open: 'success', closed: 'danger'}
-- words   = {notready: 'Not ready', open: 'Open', closed: 'Closed'}
+- classes = {notready: 'info', open: 'success', closed: 'danger', final: 'warning'}
+- words   = {notready: 'Not ready', open: 'Open', closed: 'Closed', final: 'Final'}
 =haml :team_info
 %table.table.table-bordered
   %thead
@@ -16,7 +16,6 @@
         %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
       %td= words[g.status_public]
-
 
 %h3 Standings
 %table.table.table-condensed

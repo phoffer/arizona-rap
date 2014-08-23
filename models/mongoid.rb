@@ -315,7 +315,7 @@ class Game
       :notready
     when (self.status_code == 4 && self.time > Time.now)
       :open
-    when self.status_code == 7
+    when self.status_code == 8
       :final
     else
       :closed
