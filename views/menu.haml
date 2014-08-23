@@ -1,41 +1,39 @@
-%aside.sidebar.sidebar-left
-  %h2 Arizona RAP
-  %ul
-    - if @current_user
-      - if @current_user.admin?
-        %li
-          %a{ href: '/admin/' } Admin Area
-        %li Currently in User Area
-        - if @team
-          %li
-            %a{ href: "/admin/#{@team.code}/" } Team Management
-      - else
-        %login
-          Dashboard
+- if @current_user
+  - if @current_user.admin?
+    %li
+      %a{ href: '/admin/' } Admin Area
+    %li
+      %a{href: '/'} Currently in User Area
+    - if @team
       %li
-        %a{ href: '/' } Teams
-      - if @team
-        %li
-          %a{ href: "/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
-        %li
-          %a{ href: "/#{@team.code}/standings" } Standings
-        %li
-          %a{ href: "/#{@team.code}/rules"} Rules
-      %li
-        %a{ href: '/auth/logout' } Log Out
-    - else
-      %li
-        %h3 Log in
-        %form{ action:'/auth/login', method: :post }
-          %input{ type: 'text', name: 'id', placeholder: 'name' }
-          %input{ name: 'password', type: 'password', placeholder: 'password' }
-          %button.btn.btn-default.btn-sm{ type: 'submit' } Go
-          %br
-          %input{ name: 'remember', type: 'checkbox' }
-          Remember Me
-      %li
-        %h3 Sign up
-        %form{ action: '/auth/signup', method: :post }
-          %input{ type: 'text', name: 'name', placeholder: 'name' }
-          %input{ name: 'password', type: 'password', placeholder: 'password' }
-          %button.btn.btn-default.btn-sm{ type: 'submit' } Go
+        %a{ href: "/admin/#{@team.code}/" } Team Management
+  - else
+    %li
+      %a{href: '/'} Dashboard
+  %li
+    %a{ href: '/' } Teams
+  - if @team
+    %li
+      %a{ href: "/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
+    %li
+      %a{ href: "/#{@team.code}/standings" } Standings
+    %li
+      %a{ href: "/#{@team.code}/rules"} Rules
+  %li
+    %a{ href: '/auth/logout' } Log Out
+- else
+  %li
+    %h3 Log in
+    %form{ action:'/auth/login', method: :post }
+      %input{ type: 'text', name: 'id', placeholder: 'name' }
+      %input{ name: 'password', type: 'password', placeholder: 'password' }
+      %button.btn.btn-default.btn-sm{ type: 'submit' } Go
+      %br
+      %input{ name: 'remember', type: 'checkbox' }
+      Remember Me
+  %li
+    %h3 Sign up
+    %form{ action: '/auth/signup', method: :post }
+      %input{ type: 'text', name: 'name', placeholder: 'name' }
+      %input{ name: 'password', type: 'password', placeholder: 'password' }
+      %button.btn.btn-default.btn-sm{ type: 'submit' } Go

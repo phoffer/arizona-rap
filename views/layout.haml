@@ -12,11 +12,15 @@
     %link{ rel: "stylesheet", type: "text/css", href: "/assets/css/main.css" }
     %script{src: '//code.jquery.com/jquery-2.0.0.min.js'}
     %script{src: '/assets/js/admin.js'}
-  %body
-    - if @current_user and request.path['admin']
-      =haml :'admin/menu'
-    - else
-      =haml :menu
-    %section.wrap
-      %article.content
-        =yield
+  %body.Flexbox
+    .Flexbox-body
+      %aside.sidebar.sidebar-left
+        %h2 Arizona RAP
+        %ul.nav.nav-pills.nav-stacked
+          - if @current_user and request.path['admin']
+            =haml :'admin/menu'
+          - else
+            =haml :menu
+      %section.container-fluid
+        %article.row
+          =yield

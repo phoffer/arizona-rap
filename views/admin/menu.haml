@@ -1,14 +1,11 @@
-%aside.sidebar.sidebar-left
-  %h2 Arizona RAP
-  %ul
-    %li
-      %a{href: '/admin/'} Currently in the Admin Area
-    %li
-      %a{ href: '/' } User Area
-    - if @team
-      %li
-        %a{ href: "/admin/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
-      %li
-        %a{ href: "/admin/#{@team.code}/standings" } Standings
-    %li
-      %a{ href: '/auth/logout' } Log Out
+%li
+  %a{href: '/admin/'} Currently in the Admin Area
+%li
+  %a{ href: '/' } User Area
+- if @team
+  %li
+    %a{ href: "/admin/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
+  %li
+    %a{ href: "/admin/#{@team.code}/standings" } Standings
+%li
+  %a{ href: '/auth/logout' } Log Out
