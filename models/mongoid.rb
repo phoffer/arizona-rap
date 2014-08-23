@@ -186,7 +186,7 @@ class Team
     self.games.between(time: (Time.now - 28*3600)..(Time.now + 120*3600)).first
   end
   def open_games
-    self.games.select(&:open_for_picking?)
+    self.games.select(&:open?)
   end
   def game_number(n)
     self.games.where(number: n.to_i).first
@@ -240,7 +240,6 @@ class Game
 
   default_scope -> { asc(:number) }
 
-  # scope :open_for_picking, -> { where(status_code: 4) }
 
   def status(n = self.status_code)
     %w{created prepared priced confirmed open locked stats scored final next}[n]
@@ -310,9 +309,29 @@ class Game
   def lock
     self.inc(status_code: 1) if self.status_code == 4
   end
-
-  def open_for_picking?
+  def status_public
+    case
+    when self.status_code < 4
+      :notready
+    when (self.status_code == 4 && self.time > Time.now)
+      :open
+    when self.status_code == 7
+      :final
+    else
+      :closed
+    end
+  end
+  def notready?
+    self.status_code < 4
+  end
+  def open?
     self.status_code == 4
+  end
+  def closed?
+    self.status_code > 4 or self.time < Time.now
+  end
+  def final?
+    self.status_code == 7
   end
   def rankings
     self.picksets.order_by(rank: :asc, created_at: :asc)

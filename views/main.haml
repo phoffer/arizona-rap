@@ -7,14 +7,15 @@
 /   %code
 /     &= @teams.inspect #.gsub('<', '&lt;').gsub('>', '&gt;')
 
-%table
-  - @teams.each do |t|
-    %tr
-      %td
-        - if @current_user.seasons.find_by(team: t._id)
-          %a{href: "/#{t.code}/"}= t.code
-        - else
-          %a{href: "/signup/#{t.code}"} Signup
-      %td= t.year
-      %td= t.sport
+/ %table
+/   - @teams.each do |t|
+/     %tr
+/       %td
+/         - if @current_user.seasons.find_by(team: t._id)
+/           %a{href: "/#{t.code}/"}= t.code
+/         - else
+/           %a{href: "/signup/#{t.code}"} Signup
+/       %td= t.year
+/       %td= t.sport
 
+=haml :teams_table

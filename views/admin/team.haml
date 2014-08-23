@@ -1,38 +1,25 @@
-
-%p= @team.status
-/ %br
-- if @team.status_code.zero?
-  %a{href: "#{@base_url}#{@team.code}/open"} Open for signup and play
-- elsif @team.status_code == 1
-  Team is open for signups.
-  %br
-  %a{href: "#{@base_url}#{@team.code}/close"} Close signups
-- elsif @team.status_code == 2 and @team.next_game.nil?
-  Signups are closed and season is over.
-  %br
-  %a{href: "#{@base_url}#{@team.code}/finalize"} Finalize team and season
-- elsif @team.status_code == 2 #and @team.next_game.nil?
-  Signups are closed but season is still in progress
-
-
-%table
+- classes = {notready: 'info', open: 'success', closed: 'danger'}
+- words   = {notready: 'Not ready', open: 'Open', closed: 'Closed'}
+=haml :team_info
+%table.table.table-bordered
   %thead
     %th Number
     %th Opponent
     %th Time
     %th status
+  %tbody
   - @team.games.each do |g|
-    %tr
+    %tr{class: classes[g.status_public]}
       %td
         %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.number
       %td
         %a{href: "/admin/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
-      %td= g.status
+      %td= words[g.status_public]
 
 
 %h3 Standings
-%table
+%table.table.table-condensed
   %thead
     %th Rank
     %th Points

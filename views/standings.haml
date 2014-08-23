@@ -1,0 +1,14 @@
+%h3 Standings
+%table.table.table-condensed
+  %thead
+    %th Rank
+    %th Points
+    %th Poster
+    %th Point total from games
+  %tbody
+    - @team.rankings.each do |season|
+      %tr
+        %td= season.rank
+        %td= season.rank_points
+        %td= season.user.name
+        %td= season.points

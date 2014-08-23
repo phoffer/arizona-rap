@@ -44,11 +44,15 @@ class Rap < Sinatra::Base
         # {verb: request.request_method, path: r.full_path_info, params: r.params, session: session}.to_json
         haml :team
       end
-      namespace 'standings/' do
+      get 'rules' do
+        haml "rules_#{@team.sport}".to_sym
+      end
+      namespace 'standings' do
         get do
-          "currents standings and overview"
+          @team = Team.find_by(code: params[:team_code])
+          haml :standings
         end
-        get ':user_id' do |user_id|
+        get '/:user_id' do |user_id|
 
         end
       end

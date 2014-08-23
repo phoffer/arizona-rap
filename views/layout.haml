@@ -8,11 +8,15 @@
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %meta{:content => "PRH", :name => "author"}
     %meta{:content => "", :name => "description"}
+    %link{ rel: "stylesheet", type: "text/css", href: "//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" }
     %link{ rel: "stylesheet", type: "text/css", href: "/assets/css/main.css" }
     %script{src: '//code.jquery.com/jquery-2.0.0.min.js'}
     %script{src: '/assets/js/admin.js'}
   %body
-    =haml :menu
+    - if @current_user and request.path['admin']
+      =haml :'admin/menu'
+    - else
+      =haml :menu
     %section.wrap
       %article.content
         =yield

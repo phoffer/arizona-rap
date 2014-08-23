@@ -1,4 +1,5 @@
-
+- classes = {notready: 'info', open: 'success', closed: 'danger'}
+- words   = {notready: 'Not ready', open: 'Open', closed: 'Closed'}
 - if @team.open_games.empty?
   .next
     %h3 Next Game
@@ -9,20 +10,22 @@
   %h3 Open Games
   - @team.open_games.each do |g|
     - @game = g
-    =haml :game_info
-    %a{href: "/#{@team.code}/games/#{g.number}/"} Make Picks
+    =haml :game_open
 
-%table
+%table.table.table-bordered
   %thead
     %th Number
     %th Opponent
     %th Time
     %th status
+  %tbody
   - @team.games.each do |g|
-    %tr
+    %tr{class: classes[g.status_public]}
       %td
         %a{href: "/#{@team.code}/games/#{g.number}/"}= g.number
-      %td= g.opponent
+      %td
+        %a{href: "/#{@team.code}/games/#{g.number}/"}= g.opponent
       %td= g.time
-      %td= g.status
+      %td= words[g.status_public]
+
 

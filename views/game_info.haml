@@ -1,12 +1,13 @@
-%table.game-info
-  %tr
-    %td Number
-    %td Opponent
-    %td status
-    %td Time
+- words   = {notready: 'Not ready', open: 'Open', closed: 'Closed'}
+%table.table.table-bordered
+  %thead
+    %th Number
+    %th Opponent
+    %th status
+    %th Time
   %tr
     %td= @game.number
     %td= @game.opponent
-    %td= @game.status
+    %td= words[@game.status_public]
     %td= @game.time
 %br

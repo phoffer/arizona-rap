@@ -43,6 +43,10 @@ class Rap < Sinatra::Base
         # login
         # error handle for bad login
       end
+      get 'standings' do
+        @team = Team.find_by(code: params[:team_code])
+        haml :'admin/standings'
+      end
       get 'open' do
         @team.open
         redirect request.referrer

@@ -1,0 +1,22 @@
+- words   = %w{Ready Open Closed Final}
+%table.table.table-bordered
+  %thead
+    %th Code
+    %th Year
+    %th Sport
+    %th Status
+    %th Games
+  %tbody
+  - @teams.each do |team|
+    %tr
+      %td
+        %a{href: "/#{team.code}/"}= team.code
+      %td= team.year
+      %td= team.sport
+      %td
+        - if @current_user.seasons.find_by(team: team._id)
+          %a.btn.btn-primary{href: "/#{team.code}/"}= words[team.status_code]
+        - else
+          %a.btn.btn-warning{href: "/signup/#{team.code}"} Signup
+      %td= team.games.length
+%br

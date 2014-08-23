@@ -7,6 +7,9 @@
   %br
   %input{type: :date, name: 'date' }
   %br
-  %input{type: 'checkbox' } Time is correct
+  %input{type: 'checkbox', name: :correct } Time is correct
   %br
-  %button{type: :submit} Submit
+  %button.btn.btn-warning{type: :submit} Update Time
+
+%br
+%p.well This does not actually work to update gametime, but times for the first 3 games are set already. Plus, this can always be updated manually.

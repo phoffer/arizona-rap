@@ -2,22 +2,25 @@
   %h2 Arizona RAP
   %ul
     - if @current_user
-      - if request.path['admin']
+      - if @current_user.admin?
         %li
-          %a{ href: '/admin/' } Teams
+          %a{ href: '/admin/' } Admin Area
+        %li Currently in User Area
         - if @team
           %li
-            %a{ href: "/admin/#{@team.code}/standings" } Standings
+            %a{ href: "/admin/#{@team.code}/" } Team Management
       - else
         %login
           Dashboard
+      %li
+        %a{ href: '/' } Teams
+      - if @team
         %li
-          %a{ href: '/' } Teams
-        - if @team
-          %li
-            %a{ href: "/#{@team.code}/standings" } Standings
-          %li
-            %a{ href: "/rules_#{@team.sport}"} Rules
+          %a{ href: "/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
+        %li
+          %a{ href: "/#{@team.code}/standings" } Standings
+        %li
+          %a{ href: "/#{@team.code}/rules"} Rules
       %li
         %a{ href: '/auth/logout' } Log Out
     - else
@@ -26,7 +29,7 @@
         %form{ action:'/auth/login', method: :post }
           %input{ type: 'text', name: 'id', placeholder: 'name' }
           %input{ name: 'password', type: 'password', placeholder: 'password' }
-          %button{ type: 'submit' } Go
+          %button.btn.btn-default.btn-sm{ type: 'submit' } Go
           %br
           %input{ name: 'remember', type: 'checkbox' }
           Remember Me
@@ -35,4 +38,4 @@
         %form{ action: '/auth/signup', method: :post }
           %input{ type: 'text', name: 'name', placeholder: 'name' }
           %input{ name: 'password', type: 'password', placeholder: 'password' }
-          %button{ type: 'submit' } Go
+          %button.btn.btn-default.btn-sm{ type: 'submit' } Go

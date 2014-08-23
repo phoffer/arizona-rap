@@ -35,8 +35,10 @@ $globalPadding: 10px;
       }
       form {
         input[type="text"], input[type="password"] {
+          color: black;
           width: 150px;
           button {
+            color: black;
             background-color: shade($color-red, 20%);
             height: 230px;
             width: 30px;

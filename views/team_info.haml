@@ -1,0 +1,15 @@
+- words   = %w{Ready Open Closed Final}
+%table.table.table-bordered
+  %thead
+    %th Code
+    %th Year
+    %th Sport
+    %th Status
+    %th Games
+  %tr
+    %td= @team.code
+    %td= @team.year
+    %td= @team.sport
+    %td= words[@team.status_code]
+    %td= @team.games.length
+%br
