@@ -146,7 +146,7 @@ class Team
   field :url_roster,  type: String
   field :url_ics,     type: String
   field :google_doc,  type: String
-  field :status_code, type: Integer,  default: 0
+  field :status_code, type: Integer,  default: 1
 
   index({ year: 1, sport: 1 }, { unique: true })
 
