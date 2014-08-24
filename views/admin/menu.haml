@@ -1,10 +1,10 @@
 %li
-  %a{href: '/admin/'} Currently in the Admin Area
+  %a.active{href: '/admin/'} Currently in the Admin Area
 %li
   %a{ href: '/' } User Area
 - if @team
   %li
-    %a{ href: "/admin/#{@team.code}/" }= "#{@team.year} #{@team.sport}"
+    %a{ href: "/admin/#{@team.code}/" }= "#{@team.year} #{@team.sport.to_s.capitalize}"
   %li
     %a{ href: "/admin/#{@team.code}/standings" } Standings
 %li

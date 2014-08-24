@@ -24,6 +24,7 @@ GEM
     icalendar (2.1.1)
     json (1.8.1)
     kgio (2.9.2)
+    mime-types (1.25.1)
     mini_portile (0.6.0)
     minitest (5.4.0)
     mongoid (4.0.0)
@@ -50,6 +51,10 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     raindrops (0.13.0)
+    rdoc (4.1.0)
+    rest-client (1.6.8.rc1)
+      mime-types (~> 1.16)
+      rdoc (>= 2.4.2)
     sass (3.4.0)
     sinatra (1.4.5)
       rack (~> 1.4)
@@ -88,6 +93,7 @@ DEPENDENCIES
   protected_attributes
   rack
   rack-mobile-detect
+  rest-client
   sass
   sinatra
   sinatra-contrib

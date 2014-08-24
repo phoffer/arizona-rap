@@ -1,25 +1,32 @@
 =haml :game_info
 - if @current_user
-  - if @pickset = @season.picksets.find_by(game: @game)
-    - @picks = @pickset.performance_ids.map(&:to_s)
-    - total = @pickset.total
-    - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
-    %p= "Picks last updated at #{@pickset.updated_at}"
-    %p= "Total cost: #{@pickset.cost}"
-    %p= "Total points (tiebreaker): #{@pickset.total}"
-  - else
-    - @pickset ||= Pickset.new
-    - @picks = []
-    - total = 0
-    - perfs = @game.performances.order_by(price: :desc)
+  - @pickset = @season.picksets.find_by(game: @game)
+  /   - @picks = @pickset.performance_ids.map(&:to_s)
+  /   - total = @pickset.total
+  /   - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
+  / - else
+  /   - @pickset ||= Pickset.new
+  /   - @picks = []
+  /   - total = 0
+  /   - perfs = @game.performances.order_by(price: :desc)
   - if @game.open?
     %form{method: "post"}
+      - if @pickset
+        - @picks = @pickset.performance_ids.map(&:to_s)
+        - total = @pickset.total
+        - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
+        %input.btn.btn-warning{ type: 'submit', value: 'Update Picks' }
+      - else
+        - @pickset ||= Pickset.new
+        - @picks = []
+        - total = 0
+        - perfs = @game.performances.order_by(price: :desc)
+        %p= "Picks last updated at #{@pickset.updated_at}"
+        %p= "Total cost: #{@pickset.cost}"
+        %p= "Total points (tiebreaker): #{@pickset.total}"
+        %input.btn.btn-success{ type: 'submit', value: 'Make Picks' }
       %input{ type: 'number', name: 'total', value: total } Total points
       %br
-      - if @picks.empty?
-        %input.btn.btn-success{ type: 'submit', value: 'Make Picks' }
-      - else
-        %input.btn.btn-warning{ type: 'submit', value: 'Update Picks' }
       %table.table.table-condensed
         %thead
           %th Number
@@ -29,6 +36,7 @@
           %th Select
         %tbody
           - perfs.each do |perf|
+            / - puts perf._id.to_s
             %tr{class: ('info' if @picks.include?(perf._id.to_s))}
               - p = perf.player
               %td= p.number
@@ -45,9 +53,8 @@
       - @pickset.performances.each do |perf|
         %li= "#{perf.player.first} #{perf.player.last}"
   - elsif @game.status_code == 8
-    %p= "Total points: #{@pickset.points}"
-    %p= "Rank: #{@pickset.rank}"
-    %p= "Rank points: #{@pickset.rank_points}"
+    %h3 Results
+    %h4 Rankings
     %table.table.table-bordered.table-striped.table-condensed
       %thead
         %th Rank
@@ -57,9 +64,26 @@
         %th Cost
       %tbody
         - @game.rankings.each do |pick|
-          %tr
+          %tr{class: ('info' if pick == @pickset)}
             %td= pick.rank
             %td= pick.season.user.name
             %td= pick.points
             %td= pick.difference
             %td= pick.cost
+    %h3 Players
+    %table.table.table-condensed.table-striped
+      %thead
+        %th Number
+        %th Last Name
+        %th First Name
+        %th Points
+      %tbody
+        - perfs = @game.performances.gt(points: 0).order_by(points: :desc)
+        - perfs.each do |perf|
+          %tr{class: ('info' if @pickset.performance_ids.include?(perf._id.to_s))}
+            - p = perf.player
+            %td= p.number
+            %td= p.last
+            %td= p.first
+            %td= perf.points
+

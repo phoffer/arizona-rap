@@ -43,6 +43,7 @@ gem 'bcrypt'
 # backend
 gem 'nokogiri'
 gem 'icalendar'
+gem 'rest-client', require: 'rest_client'
 # gem 'omniauth'
 # gem 'omniauth-facebook'
 # gem 'omniauth-twitter'

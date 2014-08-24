@@ -233,8 +233,8 @@ class Game
   field :time,          type: Time
   field :status_code,   type: Integer,  default: 0
   field :number,        type: Integer # => game number, i.e. (1..13) or (1..40)
-  field :points,        type: Integer # this is the sum of all point gained by players
-  field :cost,          type: Integer
+  # field :points,        type: Integer # this is the sum of all point gained by players
+  # field :cost,          type: Integer
   field :ics_id,        type: String
   field :total,         type: Integer
 

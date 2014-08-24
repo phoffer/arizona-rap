@@ -6,6 +6,7 @@ Heroku TZ has been set to America/Phoenix.
 
 # TODO
 
+* Post thread on board
 
 * main body top padding
 * player selection toggle/JS
@@ -17,3 +18,8 @@ Heroku TZ has been set to America/Phoenix.
 * post/message on forum automatically for sign up, results, pricing/game open for picks
 * write actual tests
 
+
+# PRIOR TO LAUNCH
+
+* comment `hash = {football: 14, basketball: 14}` in `lib/forum`
+* verify admin users

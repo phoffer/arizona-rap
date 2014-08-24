@@ -56,7 +56,7 @@ end
 
 
 # require_relative 'helpers/init'
-# require_relative 'lib/init'
+require_relative 'lib/init'
 require_relative 'models/init'
 require_relative 'routes/init'
 Rap.run! if __FILE__ == $0

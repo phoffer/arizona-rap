@@ -119,6 +119,8 @@ class Rap < Sinatra::Base
             end
             get 'open' do
               @game.open
+              p = Forum::Post.new(:prices, game: @game)
+              p.post
               # notify people? make post on forum?
               redirect request.referrer
             end
@@ -139,6 +141,7 @@ class Rap < Sinatra::Base
               stats = ScoringGuide.import_stats_csv(params[:stats][:tempfile].path)
               @game.score(stats, params[:total])
               @game.update_standings
+              p = Forum::Post.new(:results, game: @game).post
               redirect request.referrer
             end
             get 'score' do
@@ -149,6 +152,8 @@ class Rap < Sinatra::Base
             end
             get 'finalize' do
               @game.update_standings
+              p = Forum::Post.new(:results, game: @game)
+              p.post
               redirect request.referrer
             end
             get 'next' do
