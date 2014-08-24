@@ -27,7 +27,6 @@ def clear
   Player.all.destroy
   Performance.all.destroy
   ScoringGuide.all.destroy
-  ScoringGuide.all.destroy
   User.all.destroy
   Season.all.destroy
   Pickset.all.destroy

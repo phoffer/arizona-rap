@@ -23,6 +23,7 @@ class Rap < Sinatra::Base
   set :stylesheets, []
 
   use Rack::MobileDetect
+  # set :public_folder, Proc.new { request['X_MOBILE_DEVICE'] ? File.join(root, "views/mobile") : File.join(root, "views") }
   # use Rack::Session::Cookie, :secret => ENV['SECRET'],
   #                            :old_secret => ENV['OLD_SECRET'],
   #                            # :key => 'rack.session',

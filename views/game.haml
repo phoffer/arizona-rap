@@ -15,15 +15,34 @@
         - @picks = @pickset.performance_ids.map(&:to_s)
         - total = @pickset.total
         - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
+        / .input-group
+        /   %span.input-group-addon Total Cost
+        /   %input.form-control.disabled{ type: "text", value: @pickset.cost }
+        / .input-group
+        /   %span.input-group-addon Tiebreaker points
+        /   %input.form-control.disabled{ type: "text", value: @pickset.total }
+        / .input-group
+        /   %span.input-group-addon Updated at
+        /   %input.form-control.disabled{ type: "text", value: @pickset.updated_at }
+        / %p= "Total cost: #{@pickset.cost}"
+        / %p= "Total points (tiebreaker): #{@pickset.total}"
+        / %p= "Picks last updated at: #{@pickset.updated_at}"
+        %table.table.table-condensed
+          %tr
+            %td Cost:
+            %td= @pickset.cost
+          %tr
+            %td Tiebreaker
+            %td= @pickset.total
+          %tr
+            %td Last updated
+            %td= @pickset.updated_at
         %input.btn.btn-warning{ type: 'submit', value: 'Update Picks' }
       - else
         - @pickset ||= Pickset.new
         - @picks = []
         - total = 0
         - perfs = @game.performances.order_by(price: :desc)
-        %p= "Picks last updated at #{@pickset.updated_at}"
-        %p= "Total cost: #{@pickset.cost}"
-        %p= "Total points (tiebreaker): #{@pickset.total}"
         %input.btn.btn-success{ type: 'submit', value: 'Make Picks' }
       %input{ type: 'number', name: 'total', value: total } Total points
       %br
@@ -48,10 +67,32 @@
           %br
           %br
   - elsif @game.status_code.between?(5,7)
+    %table.table.table-condensed
+      %tr
+        %td Cost:
+        %td= @pickset.cost
+      %tr
+        %td Tiebreaker
+        %td= @pickset.total
+      %tr
+        %td Last updated
+        %td= @pickset.updated_at
     %p Game is locked. You selected the following players:
-    %ul
-      - @pickset.performances.each do |perf|
-        %li= "#{perf.player.first} #{perf.player.last}"
+    %table.table.table-condensed.table-striped
+      %thead
+        %th Number
+        %th Last Name
+        %th First Name
+        %th Price
+      %tbody
+        - @pickset.performances.each do |perf|
+          / - puts perf._id.to_s
+          %tr
+            - p = perf.player
+            %td= p.number
+            %td= p.last
+            %td= p.first
+            %td= perf.price
   - elsif @game.status_code == 8
     %h3 Results
     %h4 Rankings

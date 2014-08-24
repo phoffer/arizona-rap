@@ -70,6 +70,7 @@ class Rap < Sinatra::Base
         end
         namespace ':game_number/' do
           before do
+            @team = Team.find_by(code: params[:team_code])
             @game = @team.game_number(params[:game_number])
             # @base_url << "games/#{@game.number}/"
           end
@@ -129,12 +130,23 @@ class Rap < Sinatra::Base
               @game.lock
               redirect request.referrer
             end
-            get 'stats' do
-              # stats = ra.params['file_upload'] or google spreadsheet
-              path = 'stats.csv'
-              stats = ScoringGuide.import_stats_csv(path)
-              @game.score(stats) # ok i guess we'll score it too. if it's a file upload
-              redirect request.referrer
+            get 'stats' do # csv template download
+              @team = Team.find_by(code: params[:team_code])
+              @scoring = ScoringGuide.current(@team.sport).key.keys
+              content_type 'application/csv'
+              attachment "RAP-#{@team.code}-#{@game.number}.csv"
+              # arr = [%w{number last first} + @scoring]
+              # arr += @game.performances.order_by(price: :desc).map{ |p| [p.player.number, p.player.last, p.player.first] + Array.new(@scoring.length) }
+              # puts arr.length
+              # puts
+              # puts arr.map(&:length).inspect
+              # arr.to_csv
+              CSV.generate do |csv|
+                csv << %w{number last first} + @scoring
+                @game.performances.order_by(price: :desc).map{ |p| csv << [p.player.number, p.player.last, p.player.first] + Array.new(@scoring.length) }
+
+                # arr.each{ |a| csv << a }
+              end
             end
             post 'stats' do
               # puts params['stats'].inspect
