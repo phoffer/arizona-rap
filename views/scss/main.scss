@@ -1,5 +1,5 @@
 // Variabless
-$sidebarWidth: 400px;
+$sidebarWidth: 200px;
 $contentWidth: 800px;
 $color-blue: #0C234B;
 $color-red:  #AB0520;
@@ -23,6 +23,7 @@ section.container-fluid {
   flex-direction: column;
   -webkit-flex-direction: column;
   width: $sidebarWidth;
+  min-width: $sidebarWidth;
   border: {
     color: $color-blue;
     style: solid;
