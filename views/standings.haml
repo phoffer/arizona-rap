@@ -7,7 +7,7 @@
     %th Point total from games
   %tbody
     - @team.rankings.each do |season|
-      %tr
+      %tr{class: ('info' if season.user == @current_user)}
         %td= season.rank
         %td= season.rank_points
         %td= season.user.name
