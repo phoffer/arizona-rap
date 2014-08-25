@@ -46,7 +46,8 @@
         %input.btn.btn-success{ type: 'submit', value: 'Make Picks' }
       %input{ type: 'number', name: 'total', value: total } Total points
       %br
-      %table.table.table-condensed
+      / - puts @mobile
+      %table.table#player-selector{class: (@mobile ? 'mobile' : 'table-condensed')}
         %thead
           %th Number
           %th Last Name

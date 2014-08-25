@@ -11,7 +11,9 @@
     %link{ rel: "stylesheet", type: "text/css", href: "//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" }
     %link{ rel: "stylesheet", type: "text/css", href: "/assets/css/main.css" }
     %script{src: '//code.jquery.com/jquery-2.0.0.min.js'}
-    %script{src: '/assets/js/admin.js'}
+    - if request.path['admin']
+      %script{src: '/assets/js/admin.js'}
+    %script{src: '/assets/js/main.js'}
   %body
     .flexbox
       %aside.sidebar.sidebar-left

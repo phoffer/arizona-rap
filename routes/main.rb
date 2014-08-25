@@ -68,6 +68,7 @@ class Rap < Sinatra::Base
             @game = @team.game_number(params[:game_number].to_i)
           end
           get do
+            @mobile = request['X_MOBILE_DEVICE']
             @current_user = User.find(@user_id)
             @team = Team.find_by(code: params[:team_code])
             @season = @current_user.seasons.find_by(team: @team)
