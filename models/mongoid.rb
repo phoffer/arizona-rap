@@ -25,6 +25,9 @@ class User
   def active_seasons
     self.seasons.select(&:active?)
   end
+  def open_games
+    self.active_seasons.map(&:open_games).flatten
+  end
   def admin?
     false
   end
