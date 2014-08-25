@@ -1,32 +1,14 @@
 =haml :game_info
+- if session[:error]
+  .alert.alert-danger{ role: 'alert' }= session[:error]
+  - session.delete(:error)
 - if @current_user
-  - @pickset = @season.picksets.find_by(game: @game)
-  /   - @picks = @pickset.performance_ids.map(&:to_s)
-  /   - total = @pickset.total
-  /   - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
-  / - else
-  /   - @pickset ||= Pickset.new
-  /   - @picks = []
-  /   - total = 0
-  /   - perfs = @game.performances.order_by(price: :desc)
   - if @game.open?
     %form{method: "post"}
       - if @pickset
         - @picks = @pickset.performance_ids.map(&:to_s)
         - total = @pickset.total
         - perfs = @pickset.performances.sort_by(&:price).reverse + @game.performances.order_by(price: :desc).nin(_id: @pickset.performance_ids)
-        / .input-group
-        /   %span.input-group-addon Total Cost
-        /   %input.form-control.disabled{ type: "text", value: @pickset.cost }
-        / .input-group
-        /   %span.input-group-addon Tiebreaker points
-        /   %input.form-control.disabled{ type: "text", value: @pickset.total }
-        / .input-group
-        /   %span.input-group-addon Updated at
-        /   %input.form-control.disabled{ type: "text", value: @pickset.updated_at }
-        / %p= "Total cost: #{@pickset.cost}"
-        / %p= "Total points (tiebreaker): #{@pickset.total}"
-        / %p= "Picks last updated at: #{@pickset.updated_at}"
         %table.table.table-condensed
           %tr{class: ('danger' if @pickset.cost > 50)}
             %td Cost:

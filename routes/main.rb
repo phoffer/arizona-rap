@@ -73,13 +73,19 @@ class Rap < Sinatra::Base
             @team = Team.find_by(code: params[:team_code])
             @season = @current_user.seasons.find_by(team: @team)
             @game = @team.game_number(params[:game_number].to_i)
+            @pickset = @season.picksets.find_by(game: @game)
+            session[:error] = 'Picks total more than $50.' if @pickset.cost > 50
             haml :game
           end
           post do
-            @picks = params[:picks]
-            @pickset = @season.picksets.find_or_create_by(game: @game)
-            @pickset.update_picks(@picks, params[:total])
-            # @season.picksets.create(performance_ids: @picks, game: @game)
+            if Time.now > @game.time + 60
+              session[:error] = 'Selections were submitted too late.'
+            else
+              @picks = params[:picks]
+              @pickset = @season.picksets.find_or_create_by(game: @game)
+              @pickset.update_picks(@picks, params[:total])
+              session[:error] = 'Picks total more than $50.' if @pickset.cost > 50
+            end
             redirect request.referrer
           end
           get 'stats' do
