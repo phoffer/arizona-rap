@@ -132,21 +132,9 @@ class Rap < Sinatra::Base
             end
             get 'stats' do # csv template download
               @team = Team.find_by(code: params[:team_code])
-              @scoring = ScoringGuide.current(@team.sport).key.keys
               content_type 'application/csv'
               attachment "RAP-#{@team.code}-#{@game.number}.csv"
-              # arr = [%w{number last first} + @scoring]
-              # arr += @game.performances.order_by(price: :desc).map{ |p| [p.player.number, p.player.last, p.player.first] + Array.new(@scoring.length) }
-              # puts arr.length
-              # puts
-              # puts arr.map(&:length).inspect
-              # arr.to_csv
-              CSV.generate do |csv|
-                csv << %w{number last first} + [nil] + @scoring
-                @game.performances.order_by(price: :desc).map{ |p| csv << [p.player.number, p.player.last, p.player.first, nil] + Array.new(@scoring.length) }
-
-                # arr.each{ |a| csv << a }
-              end
+              @game.stats_template
             end
             post 'stats' do
               # puts params['stats'].inspect

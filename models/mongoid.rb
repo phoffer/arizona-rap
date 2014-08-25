@@ -195,14 +195,14 @@ class Team
     self.games.gt(time: Time.now).first
   end
   def open
-    self.inc(status_code: 1)
+    self.update_attribute(:status_code, 1)
   end
   def close
-    self.inc(status_code: 1)
+    self.update_attribute(:status_code, 1)
   end
   def finalize
     # update rankings
-    self.inc(status_code: 1)
+    self.update_attribute(:status_code, 1)
   end
   def active?
     self.status_code < 3
@@ -275,6 +275,13 @@ class Game
   end
   def scoring_guide
     ScoringGuide.current(self.team.sport)
+  end
+  def stats_template
+    scoring = scoring_guide.key.keys
+    CSV.generate do |csv|
+      csv << %w{number last first} + [nil] + scoring
+      self.performances.order_by(price: :desc).map{ |p| csv << [p.player.number, p.player.last, p.player.first, nil] + Array.new(scoring.length) }
+    end
   end
   def google_data
     data_source = self.season.spreadsheet
