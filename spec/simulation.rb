@@ -93,7 +93,7 @@ STDOUT.flush
 
 
   # # admin scoring / finalizing game
-  path = 'stats.csv'                            # => admin uploads stats.csv
+  path = 'RAP-2013F-4.csv'                            # => admin uploads stats.csv
   stats = ScoringGuide.import_stats_csv(path)   # => stats file gets parses
   # g = t.next_game                               # => would normally be last_game (switched to avoid time-travel issues)
   g = t.game_number(i)                               # => would normally be last_game (switched to avoid time-travel issues)

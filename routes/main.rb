@@ -11,7 +11,6 @@ class Rap < Sinatra::Base
   end
   namespace '/' do |r|
     before do
-      # set_view_subdir "mobile" if request['X_MOBILE_DEVICE']
       @user_id = (session['user_id'] || request.cookies['user_id'] || '')
       @current_user = User.find(@user_id)
 
