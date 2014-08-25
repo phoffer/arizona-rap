@@ -1,0 +1,28 @@
+%h4 Admin instructions
+%h5 Team information
+%ul
+  %li Each sport season is represented by a "Team." If a team is not listed above, please create it below.
+  %li The system automatically retrieves game information via Arizona Athletics' calendar. <b>However, gametime information is not set until shortly before the game, so it will need to be verified (and possibly updated) prior to each game.</b>
+  %li Each team has the following stages: 1. Created 2. Open (for player signup) 3. Closed (to signups) and 4. Final
+  %li The ability to change the status isn't integrated into the interface, so teams are set to #1 by default.
+%h5 Game information
+%ul
+  %li Each game is automatically generated when the team's schedule is retrieved.
+  %li There are a few stages that a game goes through.
+  %li <b>The next step will always be available on the game page.</b>
+  %li Steps are as follows.
+  %ol
+    %li The game must be "prepared." (The system sets up individual game information for each player.)
+    %li The players must be priced. If they do not have a price (so default $1), you do not need to enter a price for them, even though the field is empty.
+    %li After pricing, the gametime needs to be confirmed (or corrected). This is not fully implemented, but the first 3 football games have correct times already. Plus, this can always be fixed manually (just not through the interface yet).
+    %li
+      After the gametime is confirmed, the game is ready to be opened for picks.
+      %br
+      %b Prior to opening for pricks, player prices can be changed.
+    %li The game can be locked, which prevents picks from being made. This is not a required step, as picks will be rejected after the deadline (either during the pick process or during scoring. That is undecided but easily implemented.)
+    %li
+      After the game, the stats need to be uploaded. There is a template to download, it is suggested that the admin uses this template. Players are initially sorted by price, but can be re-ordered in excel (order doesn't matter as long as the first 3 "identity" columns are intact). Additionally, the point total for the game needs to be entered, as it is the tiebreaker.
+      %br
+      .b Also, please enter stats as they are. Do not calculate the points accrued by each stats for each player. The system will do that for you :)
+    %li Upon submitting the stats, the players will be automatically scored, picksets scored and ranked, and standings updated.
+  %li If you have any questions, feel free to shoot 'prh' a PM on the board. This is a bit to read at first but will make sense when you go through it the first time. It's (hopefully) not that hard.
