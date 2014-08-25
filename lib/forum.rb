@@ -42,7 +42,7 @@ module Forum
       data = self.class.params.merge(self.send("content_#{@type}"))
       # puts @game.team.sport.inspect
       # puts self.class.url(@game.team.sport)
-      Forum::Base.post(self.class.url(@game.team.sport), data)
+      # Forum::Base.post(self.class.url(@game.team.sport), data)
     end
     private
     def content_prices

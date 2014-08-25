@@ -142,8 +142,8 @@ class Rap < Sinatra::Base
               # puts arr.map(&:length).inspect
               # arr.to_csv
               CSV.generate do |csv|
-                csv << %w{number last first} + @scoring
-                @game.performances.order_by(price: :desc).map{ |p| csv << [p.player.number, p.player.last, p.player.first] + Array.new(@scoring.length) }
+                csv << %w{number last first} + [nil] + @scoring
+                @game.performances.order_by(price: :desc).map{ |p| csv << [p.player.number, p.player.last, p.player.first, nil] + Array.new(@scoring.length) }
 
                 # arr.each{ |a| csv << a }
               end

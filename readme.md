@@ -8,6 +8,9 @@ Heroku TZ has been set to America/Phoenix.
 
 
 
+* instructions for users/admin
+
+
 * user profile area, allow for email address/cell/change pass/etc
 
 * main body top padding
@@ -16,7 +19,6 @@ Heroku TZ has been set to America/Phoenix.
 * sidebar header graphic
 
 * ~better navigation~
-* instructions for users/admin
 * post/message on forum automatically for sign up, ~results, pricing/game open for picks~
 * write actual tests
 * send texts if picks haven't been made
@@ -26,5 +28,6 @@ Heroku TZ has been set to America/Phoenix.
 # PRIOR TO LAUNCH
 
 * comment `hash = {football: 14, basketball: 14}` in `lib/forum`
+* uncomment line that makes the post
 * empty database
 * verify admin users

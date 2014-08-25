@@ -28,7 +28,7 @@
         / %p= "Total points (tiebreaker): #{@pickset.total}"
         / %p= "Picks last updated at: #{@pickset.updated_at}"
         %table.table.table-condensed
-          %tr
+          %tr{class: ('danger' if @pickset.cost > 50)}
             %td Cost:
             %td= @pickset.cost
           %tr

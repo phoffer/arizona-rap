@@ -259,12 +259,19 @@ class Game
     self.inc(status_code: 1)
   end
   def price(arr = nil)
-    return if status_code >= 2 || arr.nil?
-    arr.each do |id, price|
-      next if price.to_i == 1 # modify process to not even pass these ones
-      self.performances.find(id).update_attribute(:price, price.to_i)
+    if status_code >= 4 || arr.nil?
+      return false
+    elsif status_code >= 2
+      arr.each do |id, price|
+        self.performances.find(id).update_attribute(:price, price.to_i)
+      end
+    elsif status_code == 1
+      arr.each do |id, price|
+        next if price.to_i == 1 # modify process to not even pass these ones
+        self.performances.find(id).update_attribute(:price, price.to_i)
+      end
+      self.inc(status_code: 1)
     end
-    self.inc(status_code: 1)
   end
   def scoring_guide
     ScoringGuide.current(self.team.sport)
@@ -433,7 +440,7 @@ class Performance
   def score(stats = self.stats, scoring_arr)
     self.stats = stats
     # self.points = scoring_guide.calculate(stats)
-    self.points = stats.zip(scoring_arr).inject(0) { |sum, arr| sum + arr.first * arr.last }
+    self.points = stats.zip(scoring_arr).inject(0) { |sum, arr| sum + (arr.first || 0) * arr.last }
     self.save
   end
 end
@@ -476,7 +483,7 @@ class ScoringGuide
     def import_stats_csv(path)
       # path = 'stats.csv'
       stats = CSV.read(path, headers: true, converters: :numeric)
-      sep = stats.first.index(nil) # => values
+      sep = stats.first.index(nil) # => empty column
       stats.map do |row|
         {identity: Hash[row.to_a[0..sep-1]], stats: row.fields[sep+1..-1]}
       end
