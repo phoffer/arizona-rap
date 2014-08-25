@@ -31,3 +31,11 @@ Heroku TZ has been set to America/Phoenix.
 * uncomment line that makes the post
 * empty database
 * verify admin users
+
+
+# required Environment Variables
+MONGOLAB_URI=[mongolab URI]
+RACK_ENV=development
+SECRET=[any string]
+board_username=[BDW name]
+board_password=[BDW password]
