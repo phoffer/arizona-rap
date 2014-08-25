@@ -17,10 +17,10 @@ class Rap < Sinatra::Base
       @base_url = '/'
     end
     get do
-      session['something'] = 2
       if @current_user
         @teams = Team.all
         @seasons = @current_user.seasons
+        redirect "/#{@teams.first.code}/" if @current_user.active_seasons.length == 1 and @teams.select(&:active?).length == 1
         haml :main
       else
         haml :welcome
