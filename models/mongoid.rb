@@ -57,7 +57,7 @@ class Season
 
   field :points,        type: Integer,  default: 0
   field :rank_points,   type: Integer,  default: 0
-  field :rank,          type: Integer,  default: 0 # need to examine in case of ties
+  field :rank,          type: Integer,  default: 100 # need to examine in case of ties
 
   def active?
     self.team.active?
