@@ -13,7 +13,7 @@ class Rap < Sinatra::Base
     before do
       @user_id = (session['user_id'] || request.cookies['user_id'] || '')
       @current_user = User.find(@user_id)
-
+      # redirect '/' unless @current_user
       @base_url = '/'
     end
     get do
@@ -34,6 +34,8 @@ class Rap < Sinatra::Base
       before do
         pass if request.path['auth'] or request.path['assets']
         @current_user = User.find(@user_id)
+        redirect '/' unless @current_user
+
         @team = Team.find_by(code: params[:team_code])
         @season = @current_user.seasons.find_by(team: @team)
         # redirect '/' unless @current_user
@@ -74,7 +76,7 @@ class Rap < Sinatra::Base
             @season = @current_user.seasons.find_by(team: @team)
             @game = @team.game_number(params[:game_number].to_i)
             @pickset = @season.picksets.find_by(game: @game)
-            session[:error] = 'Picks total more than $50.' if @pickset.cost > 50
+            session[:error] = 'Picks total more than $50.' if @pickset && @pickset.cost > 50
             haml :game
           end
           post do

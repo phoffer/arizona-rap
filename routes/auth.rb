@@ -21,7 +21,12 @@ class Rap < Sinatra::Base
         name = params['name']
         password = params['password']
         @current_user = User.create(name: name, password: password)
-        response.set_cookie('user_id', value: @current_user._id, expires: Time.now+24*60*60, path: '/')
+        if params['remember'] or request['X_MOBILE_DEVICE']
+          response.set_cookie("user_id", value: @current_user._id, expires: Time.now+24*60*60, path: '/')
+          # session[:user_id] = @current_user._id
+        else
+          session[:user_id] = @current_user._id
+        end
       rescue Exception => e
         puts e.details
       ensure
