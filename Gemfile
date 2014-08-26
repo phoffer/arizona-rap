@@ -6,7 +6,7 @@ gem 'rack-mobile-detect'
 # gem 'rack-parser'
 platforms :ruby do    # linux
   gem 'unicorn'
-  # gem 'newrelic_rpm'
+  gem 'newrelic_rpm'
 end
 
 group :development do

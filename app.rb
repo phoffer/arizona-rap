@@ -32,7 +32,7 @@ class Rap < Sinatra::Base
   #                            :path => '/'
 
   configure :production do
-    # require 'newrelic_rpm'
+    require 'newrelic_rpm'
     # use Rack::SslEnforcer, :only => [%r{^/user/}, %r{^/log}, %r{^/signup}, %r{^/admin/}]
     set :haml, { :ugly=>true }
     set :clean_trace, false
