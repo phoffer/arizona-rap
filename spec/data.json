@@ -1,14 +1,14 @@
 {
   "users": [
     {"name":"user_01", "password":"pass_01"},
-    {"name":"user_02", "password":"pass_01"},
-    {"name":"user_03", "password":"pass_01"},
-    {"name":"user_04", "password":"pass_01"},
-    {"name":"user_05", "password":"pass_01"},
-    {"name":"user_06", "password":"pass_01"},
-    {"name":"user_07", "password":"pass_01"},
-    {"name":"user_08", "password":"pass_01"},
-    {"name":"user_09", "password":"pass_01"}
+    {"name":"user_02", "password":"pass_02"},
+    {"name":"user_03", "password":"pass_03"},
+    {"name":"user_04", "password":"pass_04"},
+    {"name":"user_05", "password":"pass_05"},
+    {"name":"user_06", "password":"pass_06"},
+    {"name":"user_07", "password":"pass_07"},
+    {"name":"user_08", "password":"pass_08"},
+    {"name":"user_09", "password":"pass_09"}
   ],
   "admins": [
     {"name":"admin_01", "password":"pass_01"},
