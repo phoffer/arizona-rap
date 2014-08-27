@@ -244,7 +244,7 @@ class Game
   default_scope -> { asc(:number) }
 
   def gametime
-    self.time.strftime('%a %-m/%-d %I:%M')
+    self.time.strftime('%a %-m/%-d %l:%M')
   end
   def status(n = self.status_code)
     %w{created prepared priced confirmed open locked stats scored final next}[n]
