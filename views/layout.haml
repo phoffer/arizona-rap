@@ -14,15 +14,24 @@
     - if request.path['admin']
       %script{src: '/assets/js/admin.js'}
     %script{src: '/assets/js/main.js'}
+    - if is_mobile?
+      %script{src: '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'}
+      %script{src: '/assets/js/mobile.js'}
+      %link{ rel: "stylesheet", type: "text/css", href: "/assets/css/mobile.css" }
+      %meta{ name:"viewport", content:"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" }
   %body
     .flexbox
-      %aside.sidebar.sidebar-left
-        %h2 Arizona RAP
-        %ul.nav.nav-pills.nav-stacked
-          - if @current_user and request.path['admin']
-            =haml :'admin/menu'
-          - else
-            =haml :menu
-      %section.container-fluid
-        %article.row
+      - if is_mobile?
+        .container.container-fluid
           =yield
+      - else
+        %aside.sidebar.sidebar-left
+          %h2 Arizona RAP
+          %ul.nav.nav-pills.nav-stacked
+            - if @current_user and request.path['admin']
+              =haml :'admin/menu'
+            - else
+              =haml :menu
+        %section.container-fluid
+          %article.row
+            =yield

@@ -1,0 +1,19 @@
+%form{:role => "form", action: '/auth/signup', method: :post}
+  .form-group
+    %label{:for => "name"} BearDownWildcats Name
+    %input#name.form-control{:placeholder => 'Name', :type => 'text', name: 'name'}/
+  .form-group
+    %label{:for => "email"} Email (optional)
+    %input#email.form-control{:placeholder => 'Email', :type => 'email', name: 'email'}/
+  .form-group
+    %label{:for => "password"} Password
+    %input#password.form-control{:placeholder => 'Password', :type => 'password', name: 'password'}/
+  .form-group
+    %label{:for => "password_confirmation"} Confirm password
+    %input#password_confirmation.form-control{:placeholder => 'Password', :type => 'password', name: 'password_confirmation'}/
+  - unless is_mobile?
+    .checkbox
+      %label
+        %input{:type => "checkbox", name: 'remember'}/
+        Remember me
+  %button.btn.btn-primary{:type => "submit"} Sign Up

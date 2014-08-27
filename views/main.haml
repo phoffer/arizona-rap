@@ -1,2 +1,5 @@
-=haml :teams_table
+- if is_mobile?
+  =haml :'mobile/main'
+- else
+  =haml :teams_table
 

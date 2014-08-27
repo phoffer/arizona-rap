@@ -1,31 +1,33 @@
 - classes = {notready: 'info', open: 'success', closed: 'danger', final: 'warning'}
 - words   = {notready: 'Not ready', open: 'Open', closed: 'Closed', final: 'Final'}
-- if @team.open_games.empty?
-  .next
-    %h3 Next Game
-    - @game = @team.next_game
-    =haml :game_info
-- else
-  .open
-  %h3 Open Games
-  - @team.open_games.each do |g|
-    - @game = g
-    =haml :game_open
+.row
+  - if @team.open_games.empty?
+    .next
+      %h3 Next Game
+      - @game = @team.next_game
+      =haml :game_info
+  - else
+    .open
+    %h3 Open Games
+    - @team.open_games.each do |g|
+      - @game = g
+      =haml :game_open
 
-%table.table.table-bordered
-  %thead
-    %th Number
-    %th Opponent
-    %th Time
-    %th status
-  %tbody
-  - @team.games.each do |g|
-    %tr{class: classes[g.status_public]}
-      %td
-        %a{href: "/#{@team.code}/games/#{g.number}/"}= g.number
-      %td
-        %a{href: "/#{@team.code}/games/#{g.number}/"}= g.opponent
-      %td= g.time
-      %td= words[g.status_public]
+.row
+  %table.table.table-bordered
+    %thead
+      %th #
+      %th Opponent
+      %th Time
+      %th status
+    %tbody
+    - @team.games.each do |g|
+      %tr{class: classes[g.status_public]}
+        %td
+          %a{href: "/#{@team.code}/games/#{g.number}/"}= g.number
+        %td
+          %a{href: "/#{@team.code}/games/#{g.number}/"}= g.opponent
+        %td= g.gametime
+        %td= words[g.status_public]
 
 

@@ -1,18 +1,18 @@
 class Rap < Sinatra::Base
   namespace '/auth/' do
     post 'login' do
-      if @current_user = User.authenticate(params['id'], params['password']) #|| Admin.authenticate(params['id'], params['password'])
+      if @current_user = User.authenticate(params['name'], params['password']) #|| Admin.authenticate(params['id'], params['password'])
         if params['remember'] or request['X_MOBILE_DEVICE']
           response.set_cookie("user_id", value: @current_user._id, expires: Time.now+24*60*60, path: '/')
           # session[:user_id] = @current_user._id
         else
           session[:user_id] = @current_user._id
         end
+        @current_user.admin? ? redirect('/admin/') : redirect('/')
       else
         # session[:return_url] = '/'
       end
       # puts session[:_id]
-      @current_user.admin? ? redirect('/admin/') : redirect('/')
       # redirect '/'
       # do something here if @_request.xhr?
     end

@@ -141,14 +141,10 @@ pre {
   }
 }
 .input-group {
-  width: 50%
+  // width: 50%
 }
-.mobile#player-selector {
-  tr {
-    height: 45px;
-  }
+
 #player-selector {
-  }
   tr {
     &:hover {
       cursor: pointer;

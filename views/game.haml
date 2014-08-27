@@ -26,12 +26,13 @@
         - total = 0
         - perfs = @game.performances.order_by(price: :desc)
         %input.btn.btn-success{ type: 'submit', value: 'Make Picks' }
-      %input{ type: 'number', name: 'total', value: total } Total points
       %br
-      / - puts @mobile
-      %table.table#player-selector{class: (@mobile ? 'mobile' : 'table-condensed')}
+      %br
+      Total points: &nbsp;&nbsp;
+      %input{ type: 'number', name: 'total', value: total }
+      %table.table.table-condensed#player-selector
         %thead
-          %th Number
+          %th #
           %th Last Name
           %th First Name
           %th Price
@@ -63,7 +64,7 @@
     %p Game is locked. You selected the following players:
     %table.table.table-condensed.table-striped
       %thead
-        %th Number
+        %th #
         %th Last Name
         %th First Name
         %th Price
@@ -97,7 +98,7 @@
     %h3 Players
     %table.table.table-condensed.table-striped
       %thead
-        %th Number
+        %th #
         %th Last Name
         %th First Name
         %th Points

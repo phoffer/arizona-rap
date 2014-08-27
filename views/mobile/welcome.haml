@@ -1,0 +1,27 @@
+.row
+  #accordion.panel-group
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseLogin"}
+            Login
+      #collapseLogin.panel-collapse.collapse.in
+        .panel-body
+          %form{:role => "form", action: '/auth/login', method: :post}
+            .form-group
+              %label{:for => "name"} Name
+              %input#name.form-control{:placeholder => 'Name', :type => 'text', name: 'name'}/
+            .form-group
+              %label{:for => "password"} Password
+              %input#password.form-control{:placeholder => 'Password', :type => 'password', name: 'password'}/
+            %button.btn.btn-primary{:type => "submit"} Log In
+          %br
+
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseSignup"}
+            Sign Up
+      #collapseSignup.panel-collapse.collapse
+        .panel-body
+          =haml :'pieces/signup_form'

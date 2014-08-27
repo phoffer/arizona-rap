@@ -1,20 +1,17 @@
 %table.table.table-bordered
   %thead
-    %th Number
+    %th #
     %th Opponent
     %th Time
     %th Picks
   %tr
     %td= @game.number
-    - # %a{ href: "/#{@team.code}/games/#{@game.number}/"}= @game.number
     %td= @game.opponent
-    - # %a{ href: "/#{@team.code}/games/#{@game.number}/"}= @game.opponent
-    %td= @game.time
+    %td= @game.gametime
     %td
       - if @pickset = @season.picksets.find_by(game: @game)
         %a.btn.btn-warning{ href: "/#{@team.code}/games/#{@game.number}/"} Update Picks
       - else
         %a.btn.btn-success{ href: "/#{@team.code}/games/#{@game.number}/"} Make Picks!
-
 
 %br

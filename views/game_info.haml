@@ -1,7 +1,7 @@
 - words   = {notready: 'Not ready', open: 'Open', closed: 'Closed', final: 'Final'}
 %table.table.table-bordered
   %thead
-    %th Number
+    %th #
     %th Opponent
     %th status
     %th Time
@@ -9,5 +9,5 @@
     %td= @game.number
     %td= @game.opponent
     %td= words[@game.status_public]
-    %td= @game.time
+    %td= @game.gametime
 %br
