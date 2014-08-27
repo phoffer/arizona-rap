@@ -1,4 +1,7 @@
 %p Game has been finalized. Nothing to do now.
+%br
+%a{href: '#board_text'} Jump to text for board post of results.
+%br
 %a.btn.btn-primary{href: "status/next"} #OnToTheNextOne
 
 %h2 Results
@@ -17,3 +20,7 @@
         %td= pick.points
         %td= pick.difference
         %td= pick.cost
+
+%a{name: 'board_text'}
+%h4 Below is text to be posted
+%pre= Forum::Post.new(:results, game: @game).data[:message]

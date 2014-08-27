@@ -33,16 +33,15 @@ module Forum
     end
   end
   class Post
-    # stuff
     def initialize(type, **info)
       @type = type
       @game = info[:game]
     end
     def post
-      data = self.class.params.merge(self.send("content_#{@type}"))
-      # puts @game.team.sport.inspect
-      # puts self.class.url(@game.team.sport)
-      # Forum::Base.post(self.class.url(@game.team.sport), data)
+      Forum::Base.post(self.class.url(@game.team.sport), self.data)
+    end
+    def data
+      @data ||= self.class.params.merge(self.send("content_#{@type}"))
     end
     private
     def content_prices

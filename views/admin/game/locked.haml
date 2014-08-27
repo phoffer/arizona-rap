@@ -3,4 +3,11 @@
 - # form for stats upload
 %a.btn.btn-warning{href: "status/lock"} lock
 
-%form{method: :post, action: "#{@base_url}status/lock"}
+- # %form{method: :post, action: "#{@base_url}status/lock"}
+
+%hr
+- if ENV['board_autopost'].downcase != 'true'
+  %a{href: "status/open?board_post=true"} Post pricing to BDW board
+%br
+%h4 Below is text to be posted
+%pre= Forum::Post.new(:prices, game: @game).data[:message]

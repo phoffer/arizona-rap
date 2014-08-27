@@ -39,3 +39,4 @@ RACK_ENV=development
 SECRET=[any string]
 board_username=[BDW name]
 board_password=[BDW password]
+board_autopost='true' enables automatic posting of prices/results to BDW
