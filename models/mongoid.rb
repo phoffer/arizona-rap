@@ -399,7 +399,7 @@ class Player
     games = team.games.gt(status_code: 6).map(&:_id)
     perfs = self.performances.in(game_id: games)
     n = [perfs.length, 1].max
-    [perfs.map(&:points).inject(:+) / n, perfs.map(&:price).inject(:+) / n]
+    [(perfs.map(&:points).inject(:+) || 0) / n, (perfs.map(&:price).inject(:+) || 0) / n]
   end
 
 
