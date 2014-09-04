@@ -20,7 +20,7 @@
           %td= p.first
           %td= arr.first
           %td= arr[1]
-          %td= arr.first / ([arr[1], 1].max)
+          %td= (arr.first / ([arr[1], 1].max)).round(1)
           %td
             - perf = p.performances.find_by(game: @game._id)
             %input{type: :hidden, name: 'ids[]', value: perf._id}

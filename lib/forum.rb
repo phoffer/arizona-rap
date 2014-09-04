@@ -2,10 +2,13 @@ require 'rest_client'
 require 'nokogiri'
 module Forum
   module Base
-    def self.login
-      login_url = 'http://forum.prodigaleyelid.com/ucp.php?mode=login'
-      login_data = {  'username' => ENV['board_username'],
-                      'password' => ENV['board_password'],
+    def self.host
+      'http://forum.prodigaleyelid.com/'
+    end
+    def self.login(username: ENV['board_username'], password: ENV['board_password'])
+      login_url = "#{self.host}ucp.php?mode=login"
+      login_data = {  'username' => username,
+                      'password' => password,
                       'autologin' => true,
                       'viewonline' => true,
                       'redirect' => 'index.php',
@@ -14,8 +17,8 @@ module Forum
       response = RestClient.post(login_url, login_data)
       response.cookies
     end
-    def self.post(url, form_data)
-      cookies = login
+    def self.post(url, form_data, username: ENV['board_username'], password: ENV['board_password'])
+      cookies = login(username: username, password: password)
       doc = Nokogiri::HTML(RestClient.get(url, {cookies: cookies}).body)
       form_token = doc.xpath('//*[@id="options-panel"]/div/input[2]')
       creation_time = doc.xpath('//*[@id="options-panel"]/div/input[1]')
@@ -33,12 +36,14 @@ module Forum
     end
   end
   class Post
-    def initialize(type, **info)
+    def initialize(type, **params)
       @type = type
-      @game = info[:game]
+      @game = params[:game]
+      @username = params[:username] || ENV['board_username']
+      @password = params[:password] || ENV['board_password']
     end
     def post
-      Forum::Base.post(self.class.url(@game.team.sport), self.data)
+      Forum::Base.post(self.class.url(@game.team.sport), self.data, username: @username, password: @password)
     end
     def data
       @data ||= self.class.params.merge(self.send("content_#{@type}"))
@@ -47,7 +52,7 @@ module Forum
     def content_prices
       subject = "***#{@game.opponent} RAP Prices***"
       message = "DO NOT EDIT YOUR PICKS!\n\n"
-      message << @game.performances.gt(price: 1).order_by(price: :desc).map { |p| "#{p.player.last}, #{p.player.first} $#{p.price}" }.join("\n")
+      message << @game.performances.gt(price: 1).order_by(price: :desc).map { |p| p.price_string }.join("\n")
       message << "\n\nANYONE ELSE $1 (pick an individual player for $1... not all the remaining players for $1)\n\nPM me if you have any questions/concerns. Good luck!\n\nBear Down, Beat #{@game.opponent}!"
       {subject: subject, message: message}
     end
@@ -78,7 +83,7 @@ module Forum
       def url(sport)
         hash = {football: 9, basketball: 8}
         hash = {football: 14, basketball: 14}
-        "http://forum.prodigaleyelid.com/posting.php?mode=post&f=#{hash[sport]}"
+        "#{Forum::Base.host}posting.php?mode=post&f=#{hash[sport]}"
       end
     end
   end

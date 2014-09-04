@@ -10,7 +10,8 @@ class Rap < Sinatra::Base
         end
         @current_user.admin? ? redirect('/admin/') : redirect('/')
       else
-        session[:return_url] = '/'
+        # session[:return_url] = '/'
+        redirect '/'
       end
     end
     post 'signup' do

@@ -1,0 +1,21 @@
+- perf_strings = Hash.new { |hash, key| hash[key] = Performance.find(key).price_string }
+%table.game-picks.table.table-condensed
+  %thead
+    %th Poster
+    %th TB
+    %th $
+    %th Time
+    %th Players
+  %tbody
+    - @game.picksets.each do |p|
+      - tr_class = p.cost > 50 ? 'danger ' : ''
+      %tr{ class: tr_class }
+        %td= p.season.user.name
+        %td= p.total
+        %td= p.cost
+        %td= p.created_time
+        %td
+          %ul
+            - p.performance_ids.each do |perf|
+              %li= perf_strings[perf]
+

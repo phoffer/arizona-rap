@@ -120,8 +120,10 @@ class Rap < Sinatra::Base
             end
             get 'open' do
               @game.open
-              p = Forum::Post.new(:prices, game: @game)
-              p.post if (ENV['board_autopost'].downcase == 'true' or params['board_post'])
+              if (ENV['board_autopost'].downcase == 'true' or params['board_post'])
+                p = Forum::Post.new(:prices, game: @game)
+                p.post
+              end
               # notify people? make post on forum?
               redirect request.referrer
             end
@@ -141,8 +143,10 @@ class Rap < Sinatra::Base
               stats = ScoringGuide.import_stats_csv(params[:stats][:tempfile].path)
               @game.score(stats, params[:total])
               @game.update_standings
-              p = Forum::Post.new(:results, game: @game)
-              p.post if (ENV['board_autopost'].downcase == 'true' or params['board_post'])
+              if (ENV['board_autopost'].downcase == 'true' or params['board_post'])
+                p = Forum::Post.new(:results, game: @game)
+                p.post
+              end
               redirect request.referrer
             end
             get 'post_results' do

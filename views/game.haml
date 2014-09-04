@@ -92,7 +92,7 @@
           %tr{class: ('info' if pick == @pickset)}
             %td= pick.rank
             %td= pick.season.user.name
-            %td= pick.points
+            %td= "#{pick.points}"
             %td= pick.difference
             %td= pick.cost
     %h3 Players
@@ -110,5 +110,5 @@
             %td= p.number
             %td= p.last
             %td= p.first
-            %td= perf.points
+            %td= "#{perf.points}"
 

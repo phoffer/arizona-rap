@@ -35,6 +35,8 @@ def add_scoring_guides
   y = YAML::load(File.read('scoring.yaml'))
   y.each { |h| ScoringGuide.create(h) }
 end
+Admin.create(name: 'admin', password: 'rap-admin')
+exit
 
 clear         # empty db for clean run
 puts "DB cleared @ #{Time.now}"
@@ -42,6 +44,7 @@ STDOUT.flush
 Admin.create(name: 'prh', password: 'prh')
 # admin => setup
 add_scoring_guides                                    # => scoring guides added in advance
+exit
 t = Team.find_by(team_f13) || Team.create(team_f13)   # => admin creates team
 t.open                                                # => team is opened for signup
 puts "admin setup done @ #{Time.now}"
@@ -49,7 +52,6 @@ STDOUT.flush
 
 # users sign up
 json_data = JSON.parse(File.read('data.json')) # => fake user info
-Admin.create(name: 'admin', password: 'admin')
 users = json_data['users'].map do |h|
   u = User.find_by(name: h['name']) || User.create(h)   # => user creates account
   team = Team.current.first._id           # => user looks up open teams and picks one (from web, using _id)

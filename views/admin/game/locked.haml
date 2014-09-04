@@ -6,6 +6,11 @@
 - # %form{method: :post, action: "#{@base_url}status/lock"}
 
 %hr
+=haml :game_picks
+
+%br
+%br
+%hr
 - if ENV['board_autopost'].downcase != 'true'
   %a{href: "status/open?board_post=true"} Post pricing to BDW board
 %br

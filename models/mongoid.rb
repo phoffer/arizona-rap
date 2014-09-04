@@ -11,6 +11,7 @@ class User
   field :role,            type: Integer
   field :password_digest, type: String
   has_secure_password
+  validates_presence_of     :password, :on => :create
   attr_protected :role
   index({ name: 1 }, { unique: true })
 
@@ -21,6 +22,9 @@ class User
 
   def signup_for_team(team)
     self.seasons.create(team: team)
+  end
+  def season_for_team(team)
+    self.seasons.find_or_create_by(team: team)
   end
   def active_seasons
     self.seasons.select(&:active?)
@@ -35,6 +39,14 @@ class User
   class << self
     def authenticate(id, password)
       user = self.or({ email: id }, { name: id }).first and user.authenticate(password)
+    end
+    def unsecure_find(name)
+      user = self.find_by(name: name)
+      unless user
+        user = self.create(name: name)
+        user.save(validate: false)
+      end
+      user
     end
   end
 end
@@ -55,7 +67,7 @@ class Season
   belongs_to :team
   has_many :picksets
 
-  field :points,        type: Integer,  default: 0
+  field :points,        type: Float,    default: 0
   field :rank_points,   type: Integer,  default: 0
   field :rank,          type: Integer,  default: 100 # need to examine in case of ties
 
@@ -86,7 +98,7 @@ class Pickset
   field :performance_ids,   type: Array,    default: -> {Array.new}
   # field :player_ids,        type: Array,    default: -> {Performance.find(self.performance_ids).map(&:player_id)}
   field :cost,              type: Integer,  default: -> {Performance.find(self.performance_ids).map(&:price).inject(:+)}
-  field :points,            type: Integer,  default: 0
+  field :points,            type: Float,    default: 0
   field :rank,              type: Integer # need to examine this in case of ties...
   field :rank_points,       type: Integer,  default: 0
   field :total,             type: Integer,  default: 0
@@ -95,6 +107,13 @@ class Pickset
   after_create :validate_game
   scope :valid, ->(game) { lt(cost: 51, updated_at: game.time) }
 
+
+  def created_time
+    self.created_at.strftime('%a %-m/%-d %l:%M')
+  end
+  def updated_time
+    self.updated_at.strftime('%a %-m/%-d %l:%M')
+  end
 
   def update_picks(picks, total = nil)
     self.total = total if total
@@ -240,6 +259,8 @@ class Game
   # field :cost,          type: Integer
   field :ics_id,        type: String
   field :total,         type: Integer
+  field :pick_thread,   type: String
+  field :stats_pdf,     type: String
 
   default_scope -> { asc(:number) }
 
@@ -309,6 +330,9 @@ class Game
     self.scoring_guide.score_picksets(self.picksets, total.to_i)
     # self.clean
     self.update_attribute(:status_code, 7)
+  end
+  def score_from_pdf
+
   end
   def update_standings
     return false unless self.status_code == 7
@@ -397,9 +421,12 @@ class Player
   end
   def team_points_price(team)
     games = team.games.gt(status_code: 6).map(&:_id)
-    perfs = self.performances.in(game_id: games)
+    perfs = self.performances.in(game_id: games).without(:stats)
     n = [perfs.length, 1].max
     [(perfs.map(&:points).inject(:+) || 0) / n, (perfs.map(&:price).inject(:+) || 0) / n]
+  end
+  def name
+    "#{self.last}, #{self.first}"
   end
 
 
@@ -440,11 +467,23 @@ class Performance
 
   field :price,     type: Integer,  default: 1
   field :stats,     type: Array
-  field :points,    type: Integer,  default: 0
+  field :points,    type: Float,    default: 0
 
   # after_create do |p|
   #   p.game.team
   # end
+  def price_string
+    "#{self.player_name} $#{self.price}"
+  end
+  def player_name
+    "#{self.player.name}"
+  end
+  def price_string_cleaned
+    self.price_string.delete('.').gsub(/[^0-9A-Za-z$]/, ' ')
+  end
+  def stats_string
+    self.player.name_stats
+  end
 
   def updates_stats(arr)
     self.update_attribute(:stats, arr)
@@ -452,7 +491,7 @@ class Performance
   def score(stats = self.stats, scoring_arr)
     self.stats = stats
     # self.points = scoring_guide.calculate(stats)
-    self.points = stats.zip(scoring_arr).inject(0) { |sum, arr| sum + (arr.first || 0) * arr.last }
+    self.points = stats.zip(scoring_arr).inject(0) { |sum, arr| sum + (arr.first || 0).to_f * arr.last }
     self.save
   end
 end
